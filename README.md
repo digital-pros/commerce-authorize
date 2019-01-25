@@ -8,7 +8,7 @@ This gateway utlizes the thephpleague/omnipay-authorizenet Authorize.net driver,
 - Craft 3 (or later)
 - Craft Commerce 2
 
-This gateway is a commercial plugin for Craft 3 and can be installed using the Craft plugin store, or by updating the composer.json file to require this gateway plugin.
+This gateway is a commercial plugin for Craft 3 and can be installed using the Craft plugin store, or by updating the composer.json file to require this gateway.
 
 ```composer require digital-pros/commerce-authorize ```
 
