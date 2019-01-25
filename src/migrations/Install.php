@@ -53,7 +53,7 @@ class Install extends Migration
     private function _convertGateways()
     {
         $gateways = (new Query())
-            ->select(['id'])
+            ->select(['id','settings'])
             ->where(['type' => 'craft\\commerce\\gateways\\AuthorizeNet_AIM'])
             ->from(['{{%commerce_gateways}}'])
             ->all();
@@ -61,9 +61,17 @@ class Install extends Migration
         $dbConnection = Craft::$app->getDb();
 
         foreach ($gateways as $gateway) {
-
+	        
+	        $settings = json_decode($gateway['settings'], true);
+	        
+	        unset($settings['testMode']);
+	        unset($settings['hashSecret']);
+	        unset($settings['liveEndpoint']);
+	        unset($settings['developerEndpoint']);
+	        	        
             $values = [
                 'type' => Gateway::class,
+                'settings' => json_encode($settings),
             ];
 
             $dbConnection->createCommand()
