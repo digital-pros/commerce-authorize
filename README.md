@@ -2,7 +2,7 @@
 
 ## Installing the Gateway
 
-This gateway utlizes the thephpleague/omnipay-authorizenet Authorize.net driver, and will replace the previous Authorize.net AIM gateway in Craft Commerce 1.
+This gateway utlizes the thephpleague/omnipay-authorizenet Authorize.net driver, and will update the Authorize.net AIM gateway in Craft Commerce 1.
 
 #### Requirements
 - Craft 3 (or later)
