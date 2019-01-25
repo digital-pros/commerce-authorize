@@ -26,8 +26,8 @@ After installing this gateway, the default form fields will submit a transaction
 	<input id="number" name="number" placeholder="Card Number" required="required" type="text">
 
 	<label>Card Expiration Date</label>
-	<select id="month" name="month" required="required"><option value="12">12</option></select>
-	<select id="year" name="year" required="required"><option value="2019">2019</option></select>
+	<select id="month" name="month"><option value="12">12</option></select>
+	<select id="year" name="year"><option value="2019">2019</option></select>
 
 	<label>CVV/CVV2</label>
 	<input id="cvv" name="cvv" placeholder="CVV" required="required" type="text">
@@ -48,8 +48,8 @@ If Accept.js is enabled in the plugin settings, the gateway will require two hid
 	<input id="number" name="number" placeholder="Card Number" required="required" type="text">
 
 	<label>Card Expiration Date</label>
-	<select id="month" name="month" required="required"><option value="12">12</option></select>
-	<select id="year" name="year" required="required"><option value="2019">2019</option></select>
+	<select id="month" name="month"><option value="12">12</option></select>
+	<select id="year" name="year"><option value="2019">2019</option></select>
 
 	<label>CVV/CVV2</label>
 	<input id="cvv" name="cvv" placeholder="CVV" required="required" type="text">
