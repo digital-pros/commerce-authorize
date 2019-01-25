@@ -61,7 +61,7 @@ If Accept.js is enabled in the plugin settings, the gateway will require two hid
 	
 	{{ cart.gateway.getPaymentFormHtml({})|raw }}
 
-	<button class="store-button" id="authorizeSubmit" name="authorizeSubmit" onclick="event.preventDefault(); sendPaymentDataToAnet();">Pay Now</button>
+	<button id="authorizeSubmit" name="authorizeSubmit" onclick="event.preventDefault(); sendPaymentDataToAnet();">Pay Now</button>
 	
 ## Returns and Refunds
 
