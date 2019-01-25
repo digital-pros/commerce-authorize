@@ -1,0 +1,59 @@
+{% from "_includes/forms" import textField, lightswitchField %}
+
+{{ textField({
+    label: 'API Login ID'|t('commerce'),
+    id: 'apiLoginId',
+    class: 'ltr',
+    name: 'apiLoginId',
+    value: gateway.apiLoginId,
+    errors: gateway.getErrors('apiLoginId')
+}) }}
+
+{{ textField({
+    label: 'Transaction Key'|t('commerce'),
+    id: 'transactionKey',
+    class: 'ltr',
+    name: 'transactionKey',
+    value: gateway.transactionKey,
+    errors: gateway.getErrors('transactionKey')
+}) }}
+
+{{ textField({
+    label: 'Public Client Key'|t('commerce'),
+    id: 'publicKey',
+    class: 'ltr',
+    name: 'publicKey',
+    value: gateway.publicKey,
+    errors: gateway.getErrors('publicKey')
+}) }}
+
+{{ lightswitchField({
+    label: 'Developer Mode'|t('commerce'),
+    id: 'developerMode',
+    class: 'ltr',
+    name: 'developerMode',
+    errors: gateway.getErrors('developerMode'),
+    on: (gateway.developerMode is defined) ? gateway.developerMode : ""
+}) }}
+
+{{ lightswitchField({
+    label: 'Accept.js'|t('commerce'),
+    id: 'acceptJS',
+    instructions: 'Enable this toggle to use Accept.js. Payment button changes are required when using this method.',
+    class: 'ltr',
+    name: 'acceptJS',
+    errors: gateway.getErrors('developerMode'),
+    on: (gateway.acceptJS is defined) ? gateway.acceptJS : ""
+}) }}
+
+{{ lightswitchField({
+    label: 'Void if Refund Fails'|t('commerce'),
+    id: 'voidRefunds',
+    instructions: 'Authorize.net does not allow refunds to process until they have settled (around 24 hours). This toggle automatically voids the transaction if the refund fails. The entire transaction will be voided, partial voiding is not possible.',
+    class: 'ltr',
+    name: 'voidRefunds',
+    errors: gateway.getErrors('developerMode'),
+    on: (gateway.voidRefunds is defined) ? gateway.voidRefunds : ""
+}) }}
+
+

@@ -1,0 +1,43 @@
+{
+  "name": "digital-pros/commerce-authorize",
+  "description": "Authorize.net payment gateway plugin for Craft Commerce 2",
+  "version": "1.0.0",
+  "type": "craft-plugin",
+  "keywords": [
+    "authorize",
+    "commerce",
+    "craftcms",
+    "omnipay",
+    "yii2"
+  ],
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Digital Pros",
+      "homepage": "https://digitalpros.co/"
+    }
+  ],
+  "support": {
+    "email": "support@craftcms.com",
+    "issues": "https://github.com/digitalpros/commerce-authorize/issues?state=open",
+    "source": "https://github.com/digitalpros/commerce-authorize",
+    "docs": "https://github.com/digitalpros/commerce-authorize",
+    "rss": "https://github.com/digitalpros/commerce-authorize/commits/master.atom"
+  },
+  "require": {
+    "craftcms/commerce": "^2.0.0-alpha.5",
+    "craftcms/commerce-omnipay": "^1.0.0",
+    "omnipay/authorizenet": "^2.6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "digitalpros\\commerce\\authorize\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "Authorize.net for Craft Commerce",
+    "handle": "commerce-authorize",
+    "changelogUrl": "https://raw.githubusercontent.com/digitalpros/commerce-authorize/master/CHANGELOG.md",
+    "downloadUrl": "https://github.com/digitalpros/commerce-authorize/archive/master.zip"
+  }
+}
