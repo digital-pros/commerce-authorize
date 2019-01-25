@@ -14,7 +14,7 @@ This gateway is a commercial plugin for Craft 3 and can be installed using the C
 
 ## Using the Gateway
 
-After installing this gateway, the default form fields will submit a transaction to Authorize.net. 
+After installing the gateway, the default form fields will submit a transaction to Authorize.net. 
 
 ***The examples below have been simplified for illustration purposes.***
 	
