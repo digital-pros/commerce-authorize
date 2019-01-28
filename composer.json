@@ -1,7 +1,7 @@
 {
   "name": "digital-pros/commerce-authorize",
   "description": "Authorize.net payment gateway plugin for Craft Commerce 2",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "craft-plugin",
   "keywords": [
     "authorize",
@@ -25,6 +25,7 @@
     "rss": "https://github.com/digitalpros/commerce-authorize/commits/master.atom"
   },
   "require": {
+	"craftcms/cms": "^3.0.0-RC1",
     "craftcms/commerce": "^2.0.0-alpha.5",
     "craftcms/commerce-omnipay": "^1.0.0",
     "omnipay/authorizenet": "^2.6.0"
