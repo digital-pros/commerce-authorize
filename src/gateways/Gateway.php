@@ -3,11 +3,11 @@
 namespace digitalpros\commerce\authorize\gateways;
 
 use Craft;
-use digitalpros\commerce\authorize\models\AuthorizePaymentForm;
-use digitalpros\commerce\authorize\AuthorizePaymentBundle;
 use craft\commerce\base\RequestResponseInterface;
 use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\omnipay\base\CreditCardGateway;
+use digitalpros\commerce\authorize\models\AuthorizePaymentForm;
+use digitalpros\commerce\authorize\AuthorizePaymentBundle;
 use craft\commerce\omnipay\events\SendPaymentRequestEvent;
 use craft\commerce\omnipay\events\GatewayRequestEvent;
 use craft\commerce\models\Transaction;
@@ -56,9 +56,24 @@ class Gateway extends CreditCardGateway
     public $acceptJS;
     
     /**
+    * @var bool
+    */
+    public $disableAcceptData;
+    
+    /**
      * @var bool
      */
     public $voidRefunds;
+    
+    /**
+     * @var bool
+     */
+    public $insertForm;
+    
+    /**
+     * @var string
+     */
+    public $paymentButton;
     
     /**
      * @var string
@@ -88,22 +103,24 @@ class Gateway extends CreditCardGateway
 
         $params = array_merge($defaults, $params);
 		
-		// Register Accept.JS if it's enabled in the backend.
-		
-		if($this->acceptJS == 1) {
-		
 	        $view = Craft::$app->getView();
 	
 	        $previousMode = $view->getTemplateMode();
 	        $view->setTemplateMode(View::TEMPLATE_MODE_CP);
 			
-			// Check to see if developer mode is enabled.
+			// Register Accept.JS if it's enabled in the backend.
 		
-			if($this->developerMode == 1) { 
-				$view->registerJsFile('https://jstest.authorize.net/v1/Accept.js');
-			} else {
-				$view->registerJsFile('https://js.authorize.net/v1/Accept.js');
-			}
+			if($this->acceptJS == 1) {
+			
+			// Check to see if developer mode is enabled.
+			
+				if($this->developerMode == 1) { 
+					$view->registerJsFile('https://jstest.authorize.net/v1/Accept.js');
+				} else {
+					$view->registerJsFile('https://js.authorize.net/v1/Accept.js');
+				}
+				
+			} 
 		
 	        $view->registerAssetBundle(AuthorizePaymentBundle::class);
 	
@@ -111,7 +128,7 @@ class Gateway extends CreditCardGateway
 	        $view->setTemplateMode($previousMode);
         
 			return $html;
-        } 
+        
     }
 
     /**
@@ -136,22 +153,32 @@ class Gateway extends CreditCardGateway
     public function init() 
     {
 	    
-	    // By suggestion from the Craft Team, we're using the Order ID instead of truncating the
-	    // hash where available as Authorize only allows 20 characters in the RefID field.
-	    
 	    Event::on(Gateway::class, Gateway::EVENT_BEFORE_GATEWAY_REQUEST_SEND, function(GatewayRequestEvent $e) {
+          	
           	$this->orderId = $e->transaction->orderId;
+          	
+          	// Set the tokens in the request so that Credit Card Validation isn't needed.
+          	
+          	if($this->acceptJS == 1 && isset($_POST['tokenDescriptor']) && isset($_POST['token'])) {
+          		$e->request->setOpaqueDataDescriptor($_POST['tokenDescriptor']);
+          		$e->request->setOpaqueDataValue($_POST['token']);
+          	}
+          	
         });
         
 	    Event::on(Gateway::class, Gateway::EVENT_BEFORE_SEND_PAYMENT_REQUEST, function(SendPaymentRequestEvent $e) {
             
             $e->modifiedRequestData = $e->requestData;
             
+            // We're using the Order ID instead of truncating the hash where available as Authorize only allows 20 characters in the RefID field.
+            
             if(!empty($this->orderId)) {
 	            $e->modifiedRequestData->refId = $this->orderId;
             } else {
 	            $e->modifiedRequestData->refId = mb_substr($e->modifiedRequestData->refId,0,20);
             }
+            
+            // If using Accept.js, we'll remove the Credit Card details before sending to Authorize.net.
             
             if($this->acceptJS == 1) {
 	            
@@ -162,8 +189,6 @@ class Gateway extends CreditCardGateway
 					unset($e->modifiedRequestData->transactionRequest->payment->expirationDate);
 					unset($e->modifiedRequestData->transactionRequest->payment->cardCode);
 
-	            	$e->modifiedRequestData->transactionRequest->payment->opaqueData->dataDescriptor = $_POST['tokenDescriptor'];
-	            	$e->modifiedRequestData->transactionRequest->payment->opaqueData->dataValue = $_POST['token'];
 	            }
 	            	            
 			}
@@ -241,5 +266,5 @@ class Gateway extends CreditCardGateway
         }
 
     }
-    
+        
 }

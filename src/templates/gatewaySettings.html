@@ -1,5 +1,9 @@
 {% from "_includes/forms" import textField, lightswitchField %}
 
+<hr />
+
+<h2>Authorize.net Credentials</h2>
+
 {{ textField({
     label: 'API Login ID'|t('commerce'),
     id: 'apiLoginId',
@@ -30,6 +34,7 @@
 {{ lightswitchField({
     label: 'Developer Mode'|t('commerce'),
     id: 'developerMode',
+    instructions: 'Enable this toggle when using the Authorize.net Sandbox.',
     class: 'ltr',
     name: 'developerMode',
     errors: gateway.getErrors('developerMode'),
@@ -39,12 +44,16 @@
 {{ lightswitchField({
     label: 'Accept.js'|t('commerce'),
     id: 'acceptJS',
-    instructions: 'Enable this toggle to use Accept.js. Payment button changes are required when using this method.',
+    instructions: 'Enable this toggle to use Accept.js. Payment button changes are required unless using the default display below.',
     class: 'ltr',
     name: 'acceptJS',
     errors: gateway.getErrors('developerMode'),
     on: (gateway.acceptJS is defined) ? gateway.acceptJS : ""
 }) }}
+
+<hr />
+
+<h2>Authorize.net Refunds</h2>
 
 {{ lightswitchField({
     label: 'Void if Refund Fails'|t('commerce'),
@@ -56,4 +65,46 @@
     on: (gateway.voidRefunds is defined) ? gateway.voidRefunds : ""
 }) }}
 
+<hr />
+
+<h2>Default Payment Form</h2>
+
+<p><em>If you wish to use a custom form as outlined in the documentation, leave each toggle in this section disabled.</em></p>
+
+{{ lightswitchField({
+    label: 'Insert the Default Form'|t('commerce'),
+    id: 'insertForm',
+    instructions: 'Insert the default form when cart.gateway.getPaymentFormHtml is called in the checkout template.',
+    class: 'ltr',
+    name: 'insertForm',
+    errors: gateway.getErrors('insertForm'),
+    on: (gateway.insertForm is defined) ? gateway.insertForm : ""
+}) }}
+
+{{ textField({
+    label: 'Payment Button'|t('commerce'),
+    id: 'paymentButton',
+    instructions: 'Customize the text that appears inside the submit button at the bottom of the form',
+    class: 'ltr',
+    name: 'paymentButton',
+    value: gateway.paymentButton,
+    errors: gateway.getErrors('paymentButton')
+}) }}
+
+{{ lightswitchField({
+    label: 'Remove Credit Card Data Before Submission (Accept.js)'|t('commerce'),
+    id: 'disableAcceptData',
+    instructions: 'Only applies when using the default form display in conjunction with Accept.js. See the documentation for additional details.',
+    class: 'ltr',
+    name: 'disableAcceptData',
+    errors: gateway.getErrors('disableAcceptData'),
+    on: (gateway.disableAcceptData is defined) ? gateway.disableAcceptData : ""
+}) }}
+
+<hr />
+
+<h2>
+Questions or Suggestions?</h2>
+
+<p><em>Create a ticket in <a href="https://github.com/digital-pros/commerce-authorize" target="_blank">Github</a>, or email our support team at <a href="mailto:hello@digitalpros.co">hello@digitalpros.co</a>.</em></p>
 

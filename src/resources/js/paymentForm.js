@@ -1,6 +1,10 @@
-function sendPaymentDataToAnet() {
+var eraseCardData = false;
+
+function sendPaymentDataToAnet(eraseData = false) {
 	
 	var secureData = {}; authData = {}; cardData = {};
+	
+	if(eraseData == true) { eraseCardData = true; }
 
     // Extract the card number, expiration date, and card code.
     cardData.cardNumber = document.getElementById("number").value;
@@ -38,7 +42,19 @@ function responseHandler(response) {
 }
 
 function paymentFormUpdate(opaqueData) {
+	
     document.getElementById("token").value = opaqueData.dataValue;
     document.getElementById("tokenDescriptor").value = opaqueData.dataDescriptor;
+    
+    // Remove Card Data so that it's not sent back to the server.
+    
+    if(eraseCardData == true) {
+	    document.getElementById("number").value = '';
+	    document.getElementById("month").value = '';
+	    document.getElementById("year").value = '';
+	    document.getElementById("cvv").value = '';
+    }
+    
     document.getElementById("paymentForm").submit();
+    
 }

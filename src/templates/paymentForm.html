@@ -1,2 +1,132 @@
 <!-- Required to bring in JS for Processing Payment -->
 <div id="authorizeKeys" data-clientkey="{{ gateway.publicKey ?? '' }}" data-apiLoginId="{{ gateway.apiLoginId ?? '' }}"></div>
+
+{% if gateway.insertForm %}
+
+{% import "_includes/forms" as forms %}
+
+<fieldset class="card-holder">
+    <legend>{{ 'Card Holder'|t('commerce') }}</legend>
+
+    <div class="grid" data-cols="2">
+
+        <!-- Card Holder Name -->
+        <div class="item" data-colspan="1">
+            {{ forms.text({
+                name: 'firstName',
+                maxlength: 70,
+                placeholder: "First Name"|t('commerce'),
+                autocomplete: false,
+                class: 'card-holder-first-name'~(paymentForm.getErrors('firstName') ? ' error'),
+                value: paymentForm.firstName,
+                required: true,
+                autocomplete: "given-name"
+            }) }}
+        </div>
+
+        <div class="item" data-colspan="1">
+            {{ forms.text({
+                name: 'lastName',
+                maxlength: 70,
+                placeholder: "Last Name"|t('commerce'),
+                autocomplete: false,
+                class: 'card-holder-last-name'~(paymentForm.getErrors('lastName') ? ' error'),
+                value: paymentForm.lastName,
+                required: true,
+                autocomplete: "family-name"
+            }) }}
+        </div>
+    </div>
+
+    {% set errors = [] %}
+    {% for attributeKey in ['firstName', 'lastName'] %}
+        {% set errors = errors|merge(paymentForm.getErrors(attributeKey)) %}
+    {% endfor %}
+
+    {{ forms.errorList(errors) }}
+</fieldset>
+
+<!-- Card Number -->
+<fieldset class="card-data">
+    <legend>{{ 'Card'|t('commerce') }}</legend>
+
+    <div class="multitext">
+        <div class="multitextrow">
+			
+            {{ forms.text({
+                name: 'number',
+                maxlength: 19,
+                placeholder: "Card Number"|t('commerce'),
+                autocomplete: false,
+                id: 'number',
+                class: 'card-number'~(paymentForm.getErrors('number') ? ' error'),
+                value: paymentForm.number,
+                autocomplete: "cc-number"
+            }) }}
+
+        </div>
+
+        <div class="multitextrow">
+	        
+            {{ forms.text({
+                class: 'card-expiry'~(paymentForm.getErrors('month') ? ' error'),
+                type: 'text',
+                maxlength: 2,
+                id: 'month',
+                name: 'month',
+                placeholder: "MM"|t('commerce'),
+                value: paymentForm.month,
+                autocomplete: "cc-exp-month"
+            }) }}
+            
+            {{ forms.text({
+                class: 'card-expiry'~(paymentForm.getErrors('year') ? ' error'),
+                type: 'text',
+                maxlength: 4,
+                id: 'year',
+                name: 'year',
+                placeholder: "YYYY"|t('commerce'),
+                value: paymentForm.year,
+                autocomplete: "cc-exp-year"
+            }) }}
+
+            {{ forms.text({
+                type: 'text',
+                name: 'cvv',
+                id: 'cvv',
+                placeholder: "CVV"|t('commerce'),
+                class: 'card-cvc'~(paymentForm.getErrors('cvv') ? ' error'),
+                value: paymentForm.cvv,
+                autocomplete: "cc-csc"
+            }) }}
+
+        </div>
+    </div>
+
+    {% set errors = [] %}
+    {% for attributeKey in ['number', 'month', 'year', 'cvv'] %}
+        {% set errors = errors|merge(paymentForm.getErrors(attributeKey)) %}
+    {% endfor %}
+
+    {{ forms.errorList(errors) }}
+
+</fieldset>
+
+{% if gateway.acceptJS %}
+	
+	<input id="token" name="token" type="hidden">
+	<input id="tokenDescriptor" name="tokenDescriptor" type="hidden"> 
+	
+	{% if gateway.disableAcceptData %}
+		<button id="authorizeSubmit" name="authorizeSubmit" onclick="event.preventDefault(); sendPaymentDataToAnet(true);">{{ gateway.paymentButton ?? 'Pay Now' }}</button>
+	{% else %}
+		<button id="authorizeSubmit" name="authorizeSubmit" onclick="event.preventDefault(); sendPaymentDataToAnet();">{{ gateway.paymentButton ?? 'Pay Now' }}</button>
+	{% endif %}
+	
+{% else %}
+
+	<button id="submit" name="submit">{{ gateway.paymentButton ?? 'Pay Now' }}</button>
+
+{% endif %}
+
+{% endif %}

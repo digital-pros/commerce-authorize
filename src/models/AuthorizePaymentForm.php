@@ -12,15 +12,17 @@ use craft\commerce\models\payments\CreditCardPaymentForm;
  */
 class AuthorizePaymentForm extends CreditCardPaymentForm
 {
+
     /**
      * @inheritdoc
      */
     public function setAttributes($values, $safeOnly = true)
     {
+	    
         parent::setAttributes($values, $safeOnly);
 
-        if (isset($values['authorizeToken'])) {
-            $this->token = $values['authorizeToken'];
+        if (isset($values['token'])) {
+            $this->token = $values['token'];
         }
     }
 
@@ -29,6 +31,7 @@ class AuthorizePaymentForm extends CreditCardPaymentForm
      */
     public function rules(): array
     {
+	    
         if (empty($this->token)) {
             return parent::rules();
         }

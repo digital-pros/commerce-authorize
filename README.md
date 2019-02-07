@@ -16,6 +16,13 @@ This gateway is a commercial plugin for Craft 3 and can be installed using the C
 
 After installing the gateway, the default form fields will submit a transaction to Authorize.net. 
 
+### Default Payment Form
+
+When enabled in the Gateway settings, the default payment form will be used. When additional customization is needed, the custom forms below should be used. When this toggle is enabled, the following line of code will render the payment form.
+
+    {{ cart.gateway.getPaymentFormHtml({}) }}
+
+### Custom Payment Form
 ***The examples below have been simplified for illustration purposes.***
 	
 	<label>Card Holder</label>
@@ -38,7 +45,9 @@ After installing the gateway, the default form fields will submit a transaction 
 
 ## Accept.js
 
-If Accept.js is enabled in the plugin settings, the gateway will require two hidden fields (**token** and **tokenDescriptor**), which are sent back to Authorize.net after the card is validated. Accept.js also requires an adjustment to the submit button so that the payment form only submits after the card has been validated by Accept.js.
+If Accept.js is enabled in the plugin settings, the gateway will require two hidden fields (`token` and `tokenDescriptor`), which are sent back to Authorize.net after the card is validated. Accept.js also requires an adjustment to the submit button so that the payment form only submits after the card has been validated by Accept.js. As long as the two hidden fields are defined and filled by Accept.js, the credit card details will not be required.
+
+If `sendPaymentDataToAnet()` contains a `true` parameter, `sendPaymentDataToAnet(true)` the card data will be removed from the credit card fields after the token has been created, but before the form is submitted to the server for processing. For the default form above, this option is specified in the gateway settings.
 
     <label>Card Holder</label>
 	<input name="firstName" placeholder="First Name" required="required" type="text">
@@ -61,7 +70,7 @@ If Accept.js is enabled in the plugin settings, the gateway will require two hid
 	
 	{{ cart.gateway.getPaymentFormHtml({})|raw }}
 
-	<button id="authorizeSubmit" name="authorizeSubmit" onclick="event.preventDefault(); sendPaymentDataToAnet();">Pay Now</button>
+	<button id="authorizeSubmit" name="authorizeSubmit" onclick="event.preventDefault(); sendPaymentDataToAnet(true);">Pay Now</button>
 	
 ## Returns and Refunds
 
