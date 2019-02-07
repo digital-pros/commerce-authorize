@@ -49,7 +49,7 @@ If Accept.js is enabled in the plugin settings, the gateway will require two hid
 
 If `sendPaymentDataToAnet()` contains a `true` parameter, `sendPaymentDataToAnet(true)` the card data will be removed from the credit card fields after the token has been created, but before the form is submitted to the server for processing. For the default form above, this option is specified in the gateway settings.
 
-When using the custom Accept.js form illustrated below, the payment form must have an id of `paymentForm` so that payment details can be sent to Authorize.net to create the token. (i.e. `form id='paymentForm'></form`)
+When using the custom Accept.js form illustrated below, the payment form must have an id of `paymentForm` so that payment details can be sent to Authorize.net to create the token. (i.e. ```<form id='paymentForm'></form>```)
 
     <label>Card Holder</label>
 	<input name="firstName" placeholder="First Name" required="required" type="text">
