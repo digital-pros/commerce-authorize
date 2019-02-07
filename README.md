@@ -82,4 +82,4 @@ This gateway does not currently support subscriptions or saved payment methods.
 
 ## Support
 
-Questions? Feel free to open an issue.
+Questions? Feel free to open an issue, or send us a note at hello@digitalpros.co.
