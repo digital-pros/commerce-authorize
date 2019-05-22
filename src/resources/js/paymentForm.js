@@ -1,10 +1,11 @@
 var eraseCardData = false;
 
-function sendPaymentDataToAnet(eraseData = false) {
+function sendPaymentDataToAnet(eraseData) {
 	
 	var secureData = {}; authData = {}; cardData = {};
 	
-	if(eraseData == true) { eraseCardData = true; }
+	var eraseData = eraseData || false;
+	if(eraseData == true) { eraseCardData = true; } 
 
     // Extract the card number, expiration date, and card code.
     cardData.cardNumber = document.getElementById("number").value;
