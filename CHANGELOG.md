@@ -6,9 +6,6 @@
 - Authorize.net for Craft Commerce requires Craft 3.1.5 or later.
 - Authorize.net for Craft Commerce now uses Omnipay v3.
 
-### Fixed
-- Made adjustments for JS compatiblity with older browsers (Accept.js Integration).
-
 ## 1.0.4 - 2019-05-21
 
 ### Fixed
