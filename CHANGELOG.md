@@ -1,4 +1,4 @@
-# Release Notes for Commerce Authorize
+# Release Notes for Authorize.net for Craft Commerce
 
 ## 1.0.5 - 2019-07-23
 
