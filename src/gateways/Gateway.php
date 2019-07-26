@@ -266,5 +266,56 @@ class Gateway extends CreditCardGateway
         }
 
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function createPaymentSource(BasePaymentForm $sourceData, int $userId): PaymentSource
+    {
+        if (!$this->supportsPaymentSources()) {
+            throw new NotSupportedException(Craft::t('commerce', 'Payment sources are not supported by this gateway'));
+        }
+
+        $cart = Commerce::getInstance()->getCarts()->getCart();
+
+        if (!$address = $cart->getBillingAddress()) {
+            $customer = Commerce::getInstance()->getCustomers()->getCustomerByUserId($userId);
+
+            if (!$customer || !($address = $customer->getPrimaryBillingAddress())) {
+                throw new NotSupportedException(Craft::t('commerce', 'You need a billing address to save a payment source.'));
+            }
+
+            $cart->setBillingAddress($address);
+            $cart->billingAddressId = $address->id;
+        }
+
+        var_dump("RESPONSE:" . $sourceData);
+
+        $card = $this->createCard($sourceData, $cart);
+        $request = [
+            'card' => $card,
+            'currency' => $cart->paymentCurrency,
+        ];
+
+        $cardGateway = \\Omnipay::create('AuthorizeNet_CIM');
+
+        $this->populateRequest($request, $sourceData);
+        $createCardRequest = $cardGateway->createCard($request);
+
+        $response = $this->sendRequest($createCardRequest);
+
+        var_dump("RESPONSE:" . $response);
+        die();
+
+        $paymentSource = new PaymentSource([
+            'userId' => $userId,
+            'gatewayId' => $cardGateway->id,
+            'token' => $cardGateway->extractCardReference($response),
+            'response' => $response->getData(),
+            'description' => $cardGateway->extractPaymentSourceDescription($response)
+        ]);
+
+        return $paymentSource;
+    }
         
 }
