@@ -5,7 +5,7 @@
 This gateway utilizes the thephpleague/omnipay-authorizenet Authorize.net driver, and will update the Authorize.net AIM gateway in Craft Commerce 1.
 
 #### Requirements
-- Craft 3 (or later)
+- Craft 3.1.5 (or later)
 - Craft Commerce 2
 
 This gateway is a commercial plugin for Craft 3 and can be installed using the Craft plugin store, or by updating the composer.json file to require this gateway.
