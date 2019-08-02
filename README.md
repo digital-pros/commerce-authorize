@@ -1,4 +1,4 @@
-![Screenshot](resources/authorize.png)
+![Screenshot](resources/images/authorize.png)
 
 # Authorize.net for Craft Commerce </h1>
 
