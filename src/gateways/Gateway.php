@@ -231,8 +231,8 @@ class Gateway extends CreditCardGateway
 	    // We'll also check to see if we are deleting a payment source.
 	    
 	    if(NULL !== $cart->getPaymentSource() || 
-	    (isset($_POST) && strpos($_POST['action'], 'payment-sources/delete') !== false) || 
-	    (isset($_POST) && strpos($_POST['action'], 'payment-sources/add') !== false)) {
+	    (isset($_POST['action']) && strpos($_POST['action'], 'payment-sources/delete') !== false) || 
+	    (isset($_POST['action']) && strpos($_POST['action'], 'payment-sources/add') !== false)) {
 		    
 		    /** @var OmnipayGateway $gateway */
 	        $gateway = Omnipay::create('AuthorizeNet_CIM');
