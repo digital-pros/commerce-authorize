@@ -1,4 +1,6 @@
-# Authorize.net AIM - Craft Commerce 2 Gateway
+<p align="center"><img src="./src/icon.svg" width="100" height="100" alt="Authorize.net for Craft Commerce"></p>
+
+<h1 align="center"> Authorize.net for Craft Commerce </h1>
 
 ## Installing the Gateway
 
