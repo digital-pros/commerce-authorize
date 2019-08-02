@@ -2,7 +2,7 @@
 
 ## 1.0.6 - 2019-08-01
 
-{note} Significant changes have been made in this update, and a test transaction should be processed after upgrading this plugin. Saved payment sources are disabled by default, but can be enabled in the gateway settings.
+> {note} Significant changes have been made in this update, and a test transaction should be processed after upgrading this plugin. Saved payment sources are disabled by default, but can be enabled in the gateway settings.
 
 ### Added
 - Support for Saved Payment Sources using the Authorize.net Customer Information Manager.
