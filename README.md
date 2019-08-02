@@ -1,4 +1,4 @@
-<p align="center"><img src="./src/icon.svg" width="100" height="100" alt="Authorize.net for Craft Commerce"></p>
+![Screenshot](resources/authorize.png)
 
 <h1 align="center"> Authorize.net for Craft Commerce </h1>
 
