@@ -1,5 +1,10 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 1.0.7 - 2019-08-02
+
+### Fixed
+- Fixed an error that can occur when viewing transactions in the Craft Commerce order area.
+
 ## 1.0.6 - 2019-08-01
 
 > {note} Significant changes have been made in this update, and a test transaction should be processed after upgrading this plugin. Saved payment sources are disabled by default, but can be enabled in the gateway settings.
