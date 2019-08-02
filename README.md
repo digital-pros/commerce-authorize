@@ -1,6 +1,6 @@
 ![Screenshot](resources/authorize.png)
 
-<h1 align="center"> Authorize.net for Craft Commerce </h1>
+# Authorize.net for Craft Commerce </h1>
 
 This gateway utilizes the thephpleague/omnipay-authorizenet Authorize.net driver, and will update the Authorize.net AIM gateway from Craft Commerce 1.
 
