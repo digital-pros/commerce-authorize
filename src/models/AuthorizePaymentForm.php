@@ -3,6 +3,7 @@
 namespace digitalpros\commerce\authorize\models;
 
 use craft\commerce\models\payments\CreditCardPaymentForm;
+use craft\commerce\models\PaymentSource;
 
 /**
  * WorldPay Payment form model.
@@ -12,7 +13,9 @@ use craft\commerce\models\payments\CreditCardPaymentForm;
  */
 class AuthorizePaymentForm extends CreditCardPaymentForm
 {
-
+	
+	public $customerProfile;
+	
     /**
      * @inheritdoc
      */
@@ -32,10 +35,20 @@ class AuthorizePaymentForm extends CreditCardPaymentForm
     public function rules(): array
     {
 	    
-        if (empty($this->token)) {
+        if (empty($this->token) && !isset($this->customerProfile)) {
             return parent::rules();
         }
 
         return [];
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function populateFromPaymentSource(PaymentSource $paymentSource)
+    {
+       
+        $this->customerProfile = $paymentSource->token;
+        
     }
 }

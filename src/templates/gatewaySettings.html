@@ -1,4 +1,4 @@
-{% from "_includes/forms" import textField, lightswitchField %}
+{% from "_includes/forms" import textField, passwordField, lightswitchField %}
 
 <hr />
 
@@ -13,7 +13,7 @@
     errors: gateway.getErrors('apiLoginId')
 }) }}
 
-{{ textField({
+{{ passwordField({
     label: 'Transaction Key'|t('commerce'),
     id: 'transactionKey',
     class: 'ltr',
@@ -84,7 +84,7 @@
 {{ textField({
     label: 'Payment Button'|t('commerce'),
     id: 'paymentButton',
-    instructions: 'Customize the text that appears inside the submit button at the bottom of the form',
+    instructions: 'Customize the text that appears inside the submit button at the bottom of the form.',
     class: 'ltr',
     name: 'paymentButton',
     value: gateway.paymentButton,
@@ -100,6 +100,32 @@
     errors: gateway.getErrors('disableAcceptData'),
     on: (gateway.disableAcceptData is defined) ? gateway.disableAcceptData : ""
 }) }}
+
+<hr />
+
+<h2>Saved Payment Sources</h2>
+
+{{ lightswitchField({
+    label: 'Save Payment Sources?'|t('commerce'),
+    id: 'savePaymentMethods',
+    instructions: 'Payment sources are saved using the Authorize.net Customer Information Manager (CIM). <strong>CIM must be enabled inside Authorize.net prior to enabling this feature.</strong> After enabling stored payment sources, the only credit card information stored in the database will be the last four digits of the card number so that the card can be identified later (if Accept.js is not enabled). <br><br>&#9888; <strong>WARNING: If this feature is disabled after payment sources are saved, an error will be thrown if the customer tries to use or modify the payment source.</strong> <em>You may wish to run a database backup and then manually clear the Payment Sources database table before disabling this feature.</em>',
+    class: 'ltr',
+    name: 'savePaymentMethods',
+    errors: gateway.getErrors('savePaymentMethods'),
+    on: (gateway.savePaymentMethods is defined) ? gateway.savePaymentMethods : ""
+}) }}
+
+{{ textField({
+    label: 'Saved Payment Method Label Prefix'|t('commerce'),
+    id: 'savedCardPrefix',
+    instructions: "Enter the text that should appear before the last four digits of the credit card number in the payment selector (i.e. 'Saved Card - x' will result in 'Saved Card - x9999'). If left blank, only the last 4 digits will appear. Payment methods that have already been stored will not be affected by this field change. If Accept.js is enabled, the last four digits of the card number will not be appended to this label. If the description field is filled by the customer, it will override the card name set in this field.",
+    class: 'ltr',
+    name: 'savedCardPrefix',
+    value: gateway.savedCardPrefix,
+    errors: gateway.getErrors('savedCardPrefix')
+}) }}
+
+<p style="color: #8f98a3;"><em><strong>Note:</strong> If Accept.js is enabled, a separate profile will be created for each payment source stored inside Authorize.net. See the documentation for additional details. </em></p>
 
 <hr />
 

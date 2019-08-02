@@ -78,11 +78,19 @@ If `sendPaymentDataToAnet()` contains a `true` parameter, `sendPaymentDataToAnet
 	
 ## Returns and Refunds
 
-This gateway supports partial refunds and full refunds after the transaction has successfully settled in Authorize.net. In the plugin settings, there's an otpion to void the transaction if a refund fails, but the transaction will be voided entirely if the refund fails.
+This gateway supports partial refunds and full refunds after the transaction has successfully settled in Authorize.net. In the plugin settings, there's an option to void the transaction if a refund fails, but the transaction will be voided entirely if the refund fails.
 
-## Subscriptions and Saved Payment Methods
+## Saved Payment Sources
 
-This gateway does not currently support subscriptions or saved payment methods.
+Payment sources are saved using the Authorize.net Customer Information Manager (CIM). **CIM must be enabled inside Authorize.net prior to enabling this feature.** After enabling stored payment sources in the gateway settings, the only credit card information stored in the database will be the last four digits of the card number so that the card can be identified later (if Accept.js is not enabled). 
+
+Credit Cards will be added to/removed from a customer profile inside the Authorize.net Customer Information Manager. If Accept.js is enabled, a separate profile will be created for each stored payment source. *The customer profile will not be deleted from Authorize.net when the cards have been removed.*
+
+&#9888; **WARNING: If this feature is disabled after payment sources are saved, an error will be thrown if the customer tries to use or modify the payment source.** *You may wish to run a database backup and then manually clear the Payment Sources database table before disabling this feature.*
+
+## Subscriptions
+
+This gateway does not currently support subscriptions.
 
 ## Support
 
