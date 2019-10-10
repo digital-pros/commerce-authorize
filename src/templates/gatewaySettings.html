@@ -1,32 +1,35 @@
-{% from "_includes/forms" import textField, passwordField, lightswitchField %}
+{% from "_includes/forms" import autosuggestField, textField, passwordField, lightswitchField %}
 
 <hr />
 
 <h2>Authorize.net Credentials</h2>
 
-{{ textField({
+{{ autosuggestField({
     label: 'API Login ID'|t('commerce'),
     id: 'apiLoginId',
     class: 'ltr',
     name: 'apiLoginId',
+    suggestEnvVars: true,
     value: gateway.apiLoginId,
     errors: gateway.getErrors('apiLoginId')
 }) }}
 
-{{ passwordField({
+{{ autosuggestField({
     label: 'Transaction Key'|t('commerce'),
     id: 'transactionKey',
     class: 'ltr',
     name: 'transactionKey',
+    suggestEnvVars: true,
     value: gateway.transactionKey,
     errors: gateway.getErrors('transactionKey')
 }) }}
 
-{{ textField({
+{{ autosuggestField({
     label: 'Public Client Key'|t('commerce'),
     id: 'publicKey',
     class: 'ltr',
     name: 'publicKey',
+    suggestEnvVars: true,
     value: gateway.publicKey,
     errors: gateway.getErrors('publicKey')
 }) }}
@@ -37,6 +40,7 @@
     instructions: 'Enable this toggle when using the Authorize.net Sandbox.',
     class: 'ltr',
     name: 'developerMode',
+    suggestEnvVars: true,
     errors: gateway.getErrors('developerMode'),
     on: (gateway.developerMode is defined) ? gateway.developerMode : ""
 }) }}

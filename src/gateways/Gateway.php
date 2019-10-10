@@ -237,8 +237,8 @@ class Gateway extends CreditCardGateway
 		    /** @var OmnipayGateway $gateway */
 	        $gateway = Omnipay::create('AuthorizeNet_CIM');
 
-	        $gateway->setApiLoginId($this->apiLoginId);
-	        $gateway->setTransactionKey($this->transactionKey);
+	        $gateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
+	        $gateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
 	        $gateway->setDeveloperMode($this->developerMode);
 		    
 	    } else {
@@ -246,8 +246,8 @@ class Gateway extends CreditCardGateway
 		    /** @var OmnipayGateway $gateway */
 	        $gateway = Omnipay::create($this->getGatewayClassName());
 	
-	        $gateway->setApiLoginId($this->apiLoginId);
-	        $gateway->setTransactionKey($this->transactionKey);
+	        $gateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
+	        $gateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
 	        $gateway->setDeveloperMode($this->developerMode);
 		    
 	    }
@@ -379,8 +379,8 @@ class Gateway extends CreditCardGateway
       	
       	$cardGateway = Omnipay::create('AuthorizeNet_CIM');
         
-        $cardGateway->setApiLoginId($this->apiLoginId);
-        $cardGateway->setTransactionKey($this->transactionKey);
+        $cardGateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
+        $cardGateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
         $cardGateway->setDeveloperMode($this->developerMode);
 
         $this->populateRequest($request, $sourceData);
