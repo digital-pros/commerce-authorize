@@ -3,7 +3,7 @@
 ## 1.0.10 - 2020-02-24
 
 ### Fixed
-- Saved Payment Sources can now be named using the description field during checkout.
+- Saved Payment Sources can now be named using a description field while saving the payment source.
 
 ## 1.0.9 - 2020-01-30
 
