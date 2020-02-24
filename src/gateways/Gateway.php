@@ -388,12 +388,21 @@ class Gateway extends CreditCardGateway
 
         $response = $this->sendRequest($createCardRequest);
         
+	$request = Craft::$app->getRequest();
+        $description = (string)$request->getBodyParam('description');  
+	    
+	if(!empty($description)) {
+            $cardDescription = $description;
+        } else {
+            $cardDescription = $this->savedCardPrefix . substr($card->getNumber(), -4);
+        }
+	    
         $paymentSource = new PaymentSource([
             'userId' => $userId,
             'gatewayId' => $this->id,
             'token' => $response->getCardReference(),
             'response' => $response->getMessage(),
-            'description' => $this->savedCardPrefix . substr($card->getNumber(), -4)
+            'description' => $cardDescription
         ]);
         
         // End Modifications

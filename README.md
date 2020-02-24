@@ -86,6 +86,10 @@ Payment sources are saved using the Authorize.net Customer Information Manager (
 
 Credit Cards will be added to/removed from a customer profile inside the Authorize.net Customer Information Manager. If Accept.js is enabled, a separate profile will be created for each stored payment source. *The customer profile will not be deleted from Authorize.net when the cards have been removed.*
 
+When Accept.js is enabled, Craft Commerce does not process the credit card number as only a token is passed back for processing. This security measure restricts the payment sources from displaying the last four digits of the card number on the payment source. In order to save a payment source with a custom name, a description field can be added to the payment form. This could potentially be a hidden field where ***only*** the last four digits of the card could be entered before the form is submitted.
+
+	<input id="description" name="description" placeholder="Card Name" />
+
 &#9888; **WARNING: If this feature is disabled after payment sources are saved, an error will be thrown if the customer tries to use or modify the payment source.** *You may wish to run a database backup and then manually clear the Payment Sources database table before disabling this feature.*
 
 ## Subscriptions
