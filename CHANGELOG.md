@@ -1,5 +1,10 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 1.0.10 - 2020-02-24
+
+### Fixed
+- Saved Payment Sources can now be named using the description field during checkout.
+
 ## 1.0.9 - 2020-01-30
 
 ### Added
