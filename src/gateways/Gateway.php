@@ -201,7 +201,7 @@ class Gateway extends CreditCardGateway
             
             if($this->acceptJS == 1) {
 	            
-	            if(isset($e->modifiedRequestData->transactionRequest->transactionType) && $e->modifiedRequestData->transactionRequest->transactionType != "refundTransaction" && $e->modifiedRequestData->transactionRequest->transactionType != "voidTransaction" && empty($e->modifiedRequestData->transactionRequest->profile) ) {
+	            if(isset($e->modifiedRequestData->transactionRequest->transactionType) && $e->modifiedRequestData->transactionRequest->transactionType != "refundTransaction" && $e->modifiedRequestData->transactionRequest->transactionType != "voidTransaction" && $e->modifiedRequestData->transactionRequest->transactionType != "priorAuthCaptureTransaction" && empty($e->modifiedRequestData->transactionRequest->profile) ) {
 		            
 	            	unset($e->modifiedRequestData->transactionRequest->payment->creditCard);
 					unset($e->modifiedRequestData->transactionRequest->payment->cardNumber);

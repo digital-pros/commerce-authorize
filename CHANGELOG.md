@@ -1,5 +1,10 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 1.0.11 - 2020-03-01
+
+### Fixed
+- Accept.js can now capture payments after they have been authorized (Manual Capture).
+
 ## 1.0.10 - 2020-02-24
 
 ### Fixed
