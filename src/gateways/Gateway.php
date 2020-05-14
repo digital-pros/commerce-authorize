@@ -282,10 +282,32 @@ class Gateway extends CreditCardGateway
         
     public function refund(Transaction $transaction): RequestResponseInterface
     {
+
         if (!$this->supportsRefund()) {
             throw new NotSupportedException(Craft::t('commerce', 'Refunding is not supported by this gateway'));
         }
-                       
+
+        // Grab the parent transaction, check for TYPE_CAPTURE. If found, grab the parent's parent transaction.
+
+        if(!empty($transaction->parentId)) {
+
+            // Let's get the Parent Transaction and check it for a Capture type.
+
+            $parentTransaction = Commerce::getInstance()->getTransactions()->getTransactionById($transaction->parentId);
+            if(!empty($parentTransaction) && $parentTransaction->type == TransactionRecord::TYPE_CAPTURE) {
+
+                // All good. Now let's check for the parent Authorize type.
+
+                if(!empty($parentTransaction->parentId)) {
+                    $authorizeTransaction = Commerce::getInstance()->getTransactions()->getTransactionById($parentTransaction->parentId);
+                    if(!empty($authorizeTransaction) && $authorizeTransaction->type == TransactionRecord::TYPE_AUTHORIZE) {
+                        $transaction = $authorizeTransaction;
+                    }
+                }
+            }
+
+        }
+
         $request = $this->createRequest($transaction);
         $refundRequest = $this->prepareRefundRequest($request, $transaction->reference);
         $processRefund = $this->performRequest($refundRequest, $transaction);

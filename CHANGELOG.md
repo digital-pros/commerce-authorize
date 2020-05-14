@@ -1,5 +1,10 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 1.0.12 - 2020-05-13
+
+### Fixed
+- Manually captured transactions can now be refunded after they have settled.
+
 ## 1.0.11 - 2020-03-01
 
 ### Fixed
