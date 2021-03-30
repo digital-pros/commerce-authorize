@@ -4,6 +4,7 @@ namespace digitalpros\commerce\authorize\models;
 
 use craft\commerce\models\payments\CreditCardPaymentForm;
 use craft\commerce\models\PaymentSource;
+use craft\base\Model;
 
 /**
  * WorldPay Payment form model.
@@ -11,10 +12,26 @@ use craft\commerce\models\PaymentSource;
  * @author    Digital Pros - Special thanks to Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since     1.0
  */
-class AuthorizePaymentForm extends CreditCardPaymentForm
+class AuthorizeSubscriptionForm extends CreditCardPaymentForm
 {
 	
 	public $customerProfile;
+    
+    public $address;
+    
+    public $city;
+    
+    public $state;
+    
+    public $postalCode;
+    
+    public $country;
+    
+    public $phone;
+    
+    public $email;
+    
+    public $cardDescription;
 	
     /**
      * @inheritdoc

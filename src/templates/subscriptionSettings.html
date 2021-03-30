@@ -1,0 +1,134 @@
+{% from "_includes/forms" import autosuggestField, textField, passwordField, lightswitchField, editableTableField %}
+
+<hr />
+
+<p><em>Note: Capture Only transactions are not available in the subscriptions gateway.</em></p>
+
+<p><em>After setting up the subscription plans, you will need to add webhooks to your Authorize.net account. Instructions for which webhooks to enable can be found <a href="https://github.com/digital-pros/commerce-authorize#subscriptions" target="_blank">here</a>.</em></p>
+
+<hr>
+
+<h2>Authorize.net Credentials</h2>
+
+{{ autosuggestField({
+    label: 'API Login ID'|t('commerce'),
+    id: 'apiLoginId',
+    class: 'ltr',
+    name: 'apiLoginId',
+    suggestEnvVars: true,
+    value: gateway.apiLoginId,
+    errors: gateway.getErrors('apiLoginId')
+}) }}
+
+{{ autosuggestField({
+    label: 'Transaction Key'|t('commerce'),
+    id: 'transactionKey',
+    class: 'ltr',
+    name: 'transactionKey',
+    suggestEnvVars: true,
+    value: gateway.transactionKey,
+    errors: gateway.getErrors('transactionKey')
+}) }}
+
+{{ autosuggestField({
+    label: 'Public Client Key'|t('commerce'),
+    id: 'publicKey',
+    class: 'ltr',
+    name: 'publicKey',
+    suggestEnvVars: true,
+    value: gateway.publicKey,
+    errors: gateway.getErrors('publicKey')
+}) }}
+
+{{ autosuggestField({
+    label: 'Webhook Signature Key'|t('commerce'),
+    id: 'webhookSignature',
+    class: 'ltr',
+    name: 'webhookSignature',
+    suggestEnvVars: true,
+    value: gateway.webhookSignature,
+    errors: gateway.getErrors('webhookSignature')
+}) }}
+
+{{ lightswitchField({
+    label: 'Developer Mode'|t('commerce'),
+    id: 'developerMode',
+    instructions: 'Enable this toggle when using the Authorize.net Sandbox.',
+    class: 'ltr',
+    name: 'developerMode',
+    suggestEnvVars: true,
+    errors: gateway.getErrors('developerMode'),
+    on: (gateway.developerMode is defined) ? gateway.developerMode : ""
+}) }}
+
+<hr />
+
+<h2>Authorize.net Refunds</h2>
+
+<p><em>Refunds aren't available in the subscription gateway.</em></p>
+
+<hr />
+
+<h2>Subscriptions</h2>
+
+{{ editableTableField({
+    label: 'Plans',
+    instructions: 'Enter plan details below. Adjusting these settings only affects subscriptions created in the future. Authorize.net has a one month or 7-day minimum interval for recurring billing subscriptions.',
+    id: 'plans',
+    name: 'plans',
+    cols: [
+        {
+            heading : 'Plan Title',
+            type: 'singleline'
+        },
+        {
+            heading : 'Payment Interval (0-365)',
+            info: 'Enter the number of days or months that should occur between each recurring charge. For a monthly plan, enter 1 Months in the Payment Interval fields. Minimum 7 Days/1 Month, Maximum 365 Days/12 Months.',
+            type: 'number',
+        },
+        {
+            heading : 'Payment Interval Segment',
+            type: 'select',
+            instructions : 'Plan Title',
+            options: [{label: 'Months', value: 'months'}, {label: 'Days', value: 'days'}]
+        },
+        {
+            heading : 'Plan Amount',
+            info: "How much should be charged during each subscription interval? Amount of the charge to be run after the trial period.",
+            type: 'number',
+        },
+        {
+            heading : 'Trial Amount',
+            info: "How much should be charged during each trial interval? During the trial period, we will bill trialAmount on each scheduled payment. Once the trial period is over, we will bill amount for the remaining scheduled payments.",
+            type: 'number',
+        },
+        {
+            heading : 'Maximum Number of Trial Intervals',
+            info: "Number of trial intervals are set on the subscription page. If the number of intervals requested are greater than this setting, the number of trial intervals will be limited to this setting. An empty field means there's no limitation.",
+            type: 'number',
+        },
+        {
+            heading : 'Maximum Number of Intervals',
+            info: "Number of subscription intervals. Enter 9999 to create an ongoing subscription without an end date. If a trial period is specified, this value should include the number of payments during the trial period.",
+            type: 'number',
+        },
+        {
+            heading : 'Days to Wait before Starting Subscription',
+            info: "Wait this number of days before starting the trial and/or subscription.",
+            type: 'number',
+        },
+        {
+            heading : 'Authorization Charge',
+            info: "Authorize.net doesn't charge subscriptions until 2 a.m. on the first charge date. Placing a dollar amount greater than 0 in this field will charge the credit card immediately before creating the subscription.",
+            type: 'number',
+        },
+        
+    ],
+    rows: gateway.plans
+}) }}
+
+<h2>
+Questions or Suggestions?</h2>
+
+<p><em>Create a ticket in <a href="https://github.com/digital-pros/commerce-authorize" target="_blank">Github</a>, or email our support team at <a href="mailto:hello@digitalpros.co">hello@digitalpros.co</a>.</em></p>
+

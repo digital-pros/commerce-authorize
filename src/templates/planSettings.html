@@ -1,0 +1,30 @@
+{% from "_includes/forms" import select, field %}
+
+
+{% set planList = [] %}
+<div id="planList">
+    {% if gateway.plans is not null %}
+        {% for plan in gateway.plans %}
+            {% set planList = planList|merge([{'label': plan[0], 'value': loop.index - 1}]) %}
+        {% endfor %}
+    {% endif %}
+    
+    {% set planInput %}
+        <div class="flex">
+            {{ select({
+                name: 'reference',
+                options: planList,
+                value: plan ? plan.reference: 0,
+                readonly: true,
+                class: 'plan-select-'~gateway.id
+            }) }}
+        </div>
+    {% endset %}
+
+    {{ field({
+        label: "Gateway plan"|t('app'),
+        instructions: "Which gateway subscription plan do you want to use?"|t('commerce-stripe'),
+        id: 'plan',
+        errors: null,
+    }, planInput) }}
+</div>

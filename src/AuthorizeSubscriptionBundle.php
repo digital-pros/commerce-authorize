@@ -13,7 +13,7 @@ use craft\web\assets\cp\CpAsset;
 /**
  * Asset bundle for the Dashboard
  */
-class AuthorizePaymentBundle extends AssetBundle
+class AuthorizeSubscriptionBundle extends AssetBundle
 {
     /**
      * @inheritdoc
@@ -23,7 +23,7 @@ class AuthorizePaymentBundle extends AssetBundle
         $this->sourcePath = '@digitalpros/commerce/authorize/resources';
 
         $this->js = [
-            'js/paymentForm.js',
+            'js/subscriptionForm.js',
         ];
 
         parent::init();

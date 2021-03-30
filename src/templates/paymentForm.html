@@ -1,7 +1,26 @@
 <!-- Required to bring in JS for Processing Payment -->
 <div id="authorizeKeys" data-clientkey="{{ parseEnv(gateway.publicKey) }}" data-apiLoginId="{{ parseEnv(gateway.apiLoginId) }}"></div>
 
-{% if gateway.insertForm %}
+{% if craft.app.request.isCpRequest == true %}
+<style>
+    #paymentmodal #number { margin-bottom: 1%; }
+    #paymentmodal input#month {
+        width: 33%;
+        float: left;
+    }
+    #paymentmodal input#year {
+        width: 33%;
+        margin-left: 1%;
+    }
+    #paymentmodal input#cvv {
+        width: 32%;
+        margin-left: 1%;
+    }
+    
+</style>
+{% endif %}
+
+{% if gateway.insertForm or craft.app.request.isCpRequest %}
 
 {% import "_includes/forms" as forms %}
 
@@ -113,20 +132,39 @@
 </fieldset>
 
 {% if gateway.acceptJS %}
-	
+
+    {% if craft.app.request.isCpRequest == true %}
+        <script>
+            if(document.querySelector("#paymentmodal #form-gateway-{{gateway.id}}") != undefined) {
+                document.querySelector("#paymentmodal  #form-gateway-{{gateway.id}}").addEventListener("submit", function(e){
+                    e.preventDefault();    //stop form from submitting
+                    document.querySelector("#paymentmodal  #form-gateway-{{gateway.id}} input[type=submit]").setAttribute("id", "authorizeSubmit");
+                    this.setAttribute("id", "paymentForm");
+                    {% if gateway.disableAcceptData %}
+                       sendPaymentDataToAnet(true);
+                    {% else %}
+                        sendPaymentDataToAnet();
+                    {% endif %}
+                });
+            }
+        </script>
+    {% endif %}
+
 	<input id="token" name="token" type="hidden">
 	<input id="tokenDescriptor" name="tokenDescriptor" type="hidden"> 
 	
-	{% if gateway.disableAcceptData %}
+	{% if gateway.disableAcceptData and craft.app.request.isCpRequest != true %}
 		<button id="authorizeSubmit" name="authorizeSubmit" onclick="event.preventDefault(); sendPaymentDataToAnet(true);">{{ gateway.paymentButton ?? 'Pay Now' }}</button>
-	{% else %}
+	{% elseif craft.app.request.isCpRequest != true %}
 		<button id="authorizeSubmit" name="authorizeSubmit" onclick="event.preventDefault(); sendPaymentDataToAnet();">{{ gateway.paymentButton ?? 'Pay Now' }}</button>
 	{% endif %}
 	
 {% else %}
-
-	<button id="submit" name="submit">{{ gateway.paymentButton ?? 'Pay Now' }}</button>
-
+    
+    {% if craft.app.request.isCpRequest != true %}
+	    <button id="submit" name="submit">{{ gateway.paymentButton ?? 'Pay Now' }}</button>
+    {% endif %}
+    
 {% endif %}
 
 {% endif %}

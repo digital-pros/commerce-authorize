@@ -1,5 +1,20 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 1.5 - 2021-03-30
+
+> {note} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+
+### Added
+- Subscriptions are now available through a new subscriptions gateway.
+
+### Changed
+- Order reference numbers are now passed as invoice numbers in the processing gateway.
+
+### Fixed
+- Saving a card could fail in Accept.js if the card was already present on the account.
+- Credit Card Processing Form wasn't available in the control panel if the default form was disabled.
+- Refunds could fail from within the Control Panel if Accept.js was used to process the transaction.
+
 ## 1.0.12 - 2020-05-13
 
 ### Fixed

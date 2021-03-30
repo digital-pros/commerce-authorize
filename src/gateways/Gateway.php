@@ -26,9 +26,9 @@ use craft\helpers\UrlHelper;
 use Omnipay\Common\CreditCard as CreditCard;
 
 /**
- * Gateway represents WorldPay gateway
+ * Gateway represents Authorize.net gateway
  *
- * @author    Pixel & Tonic, Inc. <support@pixelandtonic.com>
+ * @author    Digital Pros - Special Thanks to Pixel & Tonic, Inc. <support@pixelandtonic.com>
  * @since     1.0
  */
 class Gateway extends CreditCardGateway
@@ -95,6 +95,11 @@ class Gateway extends CreditCardGateway
      * @var string
      */
     public $savedCardPrefix; 
+    
+    /**
+     * @var string
+     */
+    public $plans; 
 
     // Public Methods
     // =========================================================================
@@ -118,32 +123,32 @@ class Gateway extends CreditCardGateway
         ];
 
         $params = array_merge($defaults, $params);
-		
-	        $view = Craft::$app->getView();
-	
-	        $previousMode = $view->getTemplateMode();
-	        $view->setTemplateMode(View::TEMPLATE_MODE_CP);
-			
-			// Register Accept.JS if it's enabled in the backend.
-		
-			if($this->acceptJS == 1) {
-			
-			// Check to see if developer mode is enabled.
-			
-				if($this->developerMode == 1) { 
-					$view->registerJsFile('https://jstest.authorize.net/v1/Accept.js');
-				} else {
-					$view->registerJsFile('https://js.authorize.net/v1/Accept.js');
-				}
-				
-			} 
-		
-	        $view->registerAssetBundle(AuthorizePaymentBundle::class);
-	
-	        $html = Craft::$app->getView()->renderTemplate('commerce-authorize/paymentForm', $params);
-	        $view->setTemplateMode($previousMode);
         
-			return $html;
+            $view = Craft::$app->getView();
+    
+            $previousMode = $view->getTemplateMode();
+            $view->setTemplateMode(View::TEMPLATE_MODE_CP);
+            
+            // Register Accept.JS if it's enabled in the backend.
+        
+            if($this->acceptJS == 1) {
+            
+            // Check to see if developer mode is enabled.
+            
+                if($this->developerMode == 1) { 
+                    $view->registerJsFile('https://jstest.authorize.net/v1/Accept.js');
+                } else {
+                    $view->registerJsFile('https://js.authorize.net/v1/Accept.js');
+                }
+                
+            } 
+        
+            $view->registerAssetBundle(AuthorizePaymentBundle::class);
+    
+            $html = Craft::$app->getView()->renderTemplate('commerce-authorize/paymentForm', $params);
+            $view->setTemplateMode($previousMode);
+        
+            return $html;
         
     }
 
@@ -168,49 +173,49 @@ class Gateway extends CreditCardGateway
      */
     public function init() 
     {
-	    
-	    Event::on(Gateway::class, Gateway::EVENT_BEFORE_GATEWAY_REQUEST_SEND, function(GatewayRequestEvent $e) {
-          	
-          	$this->orderId = $e->transaction->orderId;
+        
+        Event::on(Gateway::class, Gateway::EVENT_BEFORE_GATEWAY_REQUEST_SEND, function(GatewayRequestEvent $e) {
+              
+              $this->orderId = $e->transaction->orderId;
 
-          	// Set the tokens in the request so that Credit Card Validation isn't needed.
-          	
-          	if($this->acceptJS == 1 && isset($_POST['tokenDescriptor']) && isset($_POST['token'])) {
-          		$e->request->setOpaqueDataDescriptor($_POST['tokenDescriptor']);
-          		$e->request->setOpaqueDataValue($_POST['token']);
-          	}
-          	
+              // Set the tokens in the request so that Credit Card Validation isn't needed.
+              
+              if($this->acceptJS == 1 && isset($_POST['tokenDescriptor']) && isset($_POST['token'])) {
+                  $e->request->setOpaqueDataDescriptor($_POST['tokenDescriptor']);
+                  $e->request->setOpaqueDataValue($_POST['token']);
+              }
+              
         });
         
-	    Event::on(Gateway::class, Gateway::EVENT_BEFORE_SEND_PAYMENT_REQUEST, function(SendPaymentRequestEvent $e) {
-		    
-		    $e->modifiedRequestData = $e->requestData;
+        Event::on(Gateway::class, Gateway::EVENT_BEFORE_SEND_PAYMENT_REQUEST, function(SendPaymentRequestEvent $e) {
+            
+            $e->modifiedRequestData = $e->requestData;
             
             // We're using the Order ID instead of truncating the hash where available as Authorize only allows 20 characters in the RefID field.
             // Not all requests will have a refId (like the Create Profile request), so we'll check for that first, then the Order ID.
             
             if(isset($e->requestData->refId)) {
-	            if(!empty($this->orderId)) {
-		            $e->modifiedRequestData->refId = $this->orderId;
-	            } else {
-		            $e->modifiedRequestData->refId = mb_substr($e->modifiedRequestData->refId,0,20);
-	            }
+                if(!empty($this->orderId)) {
+                    $e->modifiedRequestData->refId = $this->orderId;
+                } else {
+                    $e->modifiedRequestData->refId = mb_substr($e->modifiedRequestData->refId,0,20);
+                }
             }
             
             // If using Accept.js, we'll remove the Credit Card details before sending to Authorize.net.
             
             if($this->acceptJS == 1) {
-	            
-	            if(isset($e->modifiedRequestData->transactionRequest->transactionType) && $e->modifiedRequestData->transactionRequest->transactionType != "refundTransaction" && $e->modifiedRequestData->transactionRequest->transactionType != "voidTransaction" && $e->modifiedRequestData->transactionRequest->transactionType != "priorAuthCaptureTransaction" && empty($e->modifiedRequestData->transactionRequest->profile) ) {
-		            
-	            	unset($e->modifiedRequestData->transactionRequest->payment->creditCard);
-					unset($e->modifiedRequestData->transactionRequest->payment->cardNumber);
-					unset($e->modifiedRequestData->transactionRequest->payment->expirationDate);
-					unset($e->modifiedRequestData->transactionRequest->payment->cardCode);				
+                
+                if(isset($e->modifiedRequestData->transactionRequest->transactionType) && $e->modifiedRequestData->transactionRequest->transactionType != "refundTransaction" && $e->modifiedRequestData->transactionRequest->transactionType != "voidTransaction" && $e->modifiedRequestData->transactionRequest->transactionType != "priorAuthCaptureTransaction" && empty($e->modifiedRequestData->transactionRequest->profile) ) {
+                    
+                    unset($e->modifiedRequestData->transactionRequest->payment->creditCard);
+                    unset($e->modifiedRequestData->transactionRequest->payment->cardNumber);
+                    unset($e->modifiedRequestData->transactionRequest->payment->expirationDate);
+                    unset($e->modifiedRequestData->transactionRequest->payment->cardCode);				
 
-	            }
+                }
 
-			}
+            }
             
         }); 
 
@@ -225,33 +230,37 @@ class Gateway extends CreditCardGateway
     protected function createGateway(): AbstractGateway
     {
 
-	    $cart = Commerce::getInstance()->getCarts()->getCart();
-	    
-	    // We need to set the Gateway to CIM for all transactions that use stored Payment Sources. 
-	    // We'll also check to see if we are deleting a payment source.
-	    
-	    if(NULL !== $cart->getPaymentSource() || 
-	    (isset($_POST['action']) && strpos($_POST['action'], 'payment-sources/delete') !== false) || 
-	    (isset($_POST['action']) && strpos($_POST['action'], 'payment-sources/add') !== false)) {
-		    
-		    /** @var OmnipayGateway $gateway */
-	        $gateway = Omnipay::create('AuthorizeNet_CIM');
+        $cart = Commerce::getInstance()->getCarts()->getCart();
+        
+        // We need to set the Gateway to CIM for all transactions that use stored Payment Sources. 
+        // We'll also check to see if we are deleting a payment source.
+        
+        if(NULL !== $cart->getPaymentSource() || 
+        (isset($_POST['action']) && strpos($_POST['action'], 'payment-sources/delete') !== false) || 
+        (isset($_POST['action']) && strpos($_POST['action'], 'payment-sources/add') !== false)) {
+            
+            /** @var OmnipayGateway $gateway */
+            $gateway = Omnipay::create('AuthorizeNet_CIM');
 
-	        $gateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
-	        $gateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
-	        $gateway->setDeveloperMode($this->developerMode);
-		    
-	    } else {
-		    
-		    /** @var OmnipayGateway $gateway */
-	        $gateway = Omnipay::create($this->getGatewayClassName());
-	
-	        $gateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
-	        $gateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
-	        $gateway->setDeveloperMode($this->developerMode);
-		    
-	    }
-		
+            $gateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
+            $gateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
+            $gateway->setDeveloperMode($this->developerMode);
+            
+            $gateway->setParameter('invoiceNumber', substr($cart->number, 0, 7));
+            
+        } else {
+            
+            /** @var OmnipayGateway $gateway */
+            $gateway = Omnipay::create($this->getGatewayClassName());
+    
+            $gateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
+            $gateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
+            $gateway->setDeveloperMode($this->developerMode);
+
+            $gateway->setParameter('invoiceNumber', substr($cart->number, 0, 7));
+            
+        }
+        
         return $gateway;
     }
 
@@ -310,31 +319,32 @@ class Gateway extends CreditCardGateway
 
         $request = $this->createRequest($transaction);
         $refundRequest = $this->prepareRefundRequest($request, $transaction->reference);
+        
         $processRefund = $this->performRequest($refundRequest, $transaction);
         
         if(!$processRefund->isSuccessful() && $this->voidRefunds == "1") {
-	        $voidRequest = $this->prepareVoidRequest($request, $transaction->reference);
-	        	        
-	        $order = craft\commerce\elements\Order::find()->id($transaction->orderId)->one();
-	        if($transaction->amount < $order->getTotalPaid()) {
-		    	throw new NotSupportedException(Craft::t('commerce', 'Enter the full transaction amount to void the transaction, or disable void in the gateway settings.'));
-	        }
-	        
-	        $processVoid = $this->performRequest($voidRequest, $transaction);
-	        return $processVoid;
+            $voidRequest = $this->prepareVoidRequest($request, $transaction->reference);
+                        
+            $order = craft\commerce\elements\Order::find()->id($transaction->orderId)->one();
+            if($transaction->amount < $order->getTotalPaid()) {
+                throw new NotSupportedException(Craft::t('commerce', 'Enter the full transaction amount to void the transaction, or disable void in the gateway settings.'));
+            }
+            
+            $processVoid = $this->performRequest($voidRequest, $transaction);
+            return $processVoid;
         } else {
-	        return $processRefund;
+            return $processRefund;
         }
 
     }
     
     public function supportsPaymentSources(): bool
     {
-	    if(isset($this->savePaymentMethods)) {
-		    return $this->savePaymentMethods;
-	    } else {
-		    return FALSE;
-	    }     
+        if(isset($this->savePaymentMethods)) {
+            return $this->savePaymentMethods;
+        } else {
+            return FALSE;
+        }     
     }
 
     /**
@@ -358,19 +368,19 @@ class Gateway extends CreditCardGateway
             $cart->setBillingAddress($address);
             $cart->billingAddressId = $address->id;
         }
-        		
-		// Start Modifications
+                
+        // Start Modifications
         
         $fullName = $cart->getBillingAddress()->firstName . " " . $cart->getBillingAddress()->lastName;
-		
-		if($this->acceptJS == 1) {
-			$sourceData->number = "";
-			$sourceData->month = "";
-			$sourceData->year = "";
-			$sourceData->cvv = "";
-			$sourceData->expiry = "";
-		}
-		
+        
+        if($this->acceptJS == 1) {
+            $sourceData->number = "";
+            $sourceData->month = "";
+            $sourceData->year = "";
+            $sourceData->cvv = "";
+            $sourceData->expiry = "";
+        }
+        
         $card = $this->createCard($sourceData, $cart);
         
         /* According to line 221 of https://github.com/thephpleague/omnipay-authorizenet/blob/master/src/Message/CIMCreateCardRequest.php,
@@ -378,28 +388,28 @@ class Gateway extends CreditCardGateway
         // is enabled, we'll add a random number to the description so that a new payment profile will be created for each card. */
         
         if($this->acceptJS == 1) { 
-	        $description = 'Commerce Customer - ' . $userId . "-" . rand(100000000, 999999999);
+            $description = 'Commerce Customer - ' . $userId . "-" . rand(100000000, 999999999);
         } else {
-	        $description = 'Commerce Customer';
+            $description = 'Commerce Customer';
         }
-        
+
         $request = [
-	        'name' => $fullName,
-	        'email' => $cart->getEmail(), 
-	        'customerType' => 'individual',
-	        'customerId' => $userId,
-	        'description' => $description,
-	        'forceCardUpdate' => true,
+            'name' => $fullName,
+            'email' => $cart->getEmail(), 
+            'customerType' => 'individual',
+            'customerId' => $userId,
+            'description' => $description,
+            'forceCardUpdate' => true,
             'card' => $card,
             'currency' => $cart->paymentCurrency
         ];
         
         if($this->acceptJS == 1 && isset($_POST['tokenDescriptor']) && isset($_POST['token'])) {
-      		$request['opaqueDataDescriptor'] = $_POST['tokenDescriptor'];
-      		$request['opaqueDataValue'] = $_POST['token'];
-      	}
-      	
-      	$cardGateway = Omnipay::create('AuthorizeNet_CIM');
+              $request['opaqueDataDescriptor'] = $_POST['tokenDescriptor'];
+              $request['opaqueDataValue'] = $_POST['token'];
+          }
+          
+          $cardGateway = Omnipay::create('AuthorizeNet_CIM');
         
         $cardGateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
         $cardGateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
@@ -410,16 +420,32 @@ class Gateway extends CreditCardGateway
 
         $response = $this->sendRequest($createCardRequest);
         
-	$request = Craft::$app->getRequest();
+        $request = Craft::$app->getRequest();
         $description = (string)$request->getBodyParam('description');  
-	    
-	if(!empty($description)) {
+        
+        if(!empty($description)) {
             $cardDescription = $description;
         } else {
             $cardDescription = $this->savedCardPrefix . substr($card->getNumber(), -4);
         }
-	    
+        
+        $currentSource = null;
+        
+        // Need to pass ID if it exists, or Craft throws a fit.
+        if($this->acceptJS != 1) {
+            $paymentSources = Commerce::getInstance()->getPaymentSources()->getAllPaymentSourcesByUserId($userId); 
+            
+            if(!empty($paymentSources)) {
+                foreach($paymentSources as $source) {
+                    if($source->token == $response->getCardReference()) {
+                        $currentSource = $source->id;
+                    }
+                }
+            }
+        }
+        
         $paymentSource = new PaymentSource([
+            'id'=> $currentSource,
             'userId' => $userId,
             'gatewayId' => $this->id,
             'token' => $response->getCardReference(),
@@ -443,11 +469,50 @@ class Gateway extends CreditCardGateway
      */
     protected function createRequest(Transaction $transaction, BasePaymentForm $form = null)
     {
+        
+        $order = $transaction->getOrder();
+        
         // For authorize and capture we're referring to a transaction that already took place so no card or item shenanigans.
-        if (in_array($transaction->type, [TransactionRecord::TYPE_REFUND, TransactionRecord::TYPE_CAPTURE], false)) {
-            $request = $this->createPaymentRequest($transaction);
+        if (in_array($transaction->type, [TransactionRecord::TYPE_REFUND, TransactionRecord::TYPE_CAPTURE], false) && isset($form->customerProfile)) {
+            
+            // Start Modifications 
+            // Due to Accept.js, there are certain cases where the Card number may not be available in the transactions reference, 
+            // but it's stored in the response from the gateway. Grab that response, and give it back to 
+            // the transaction before it's sent back for processing.
+            
+            // Alternatively, we could request this information from Authorize.net, but this appears to be the most efficient
+            // workaround for now.
+            
+            $transactionReference = json_decode($transaction->reference);
+           
+            if(!empty($transactionReference) && !isset($transactionReference->card)) {
+                $authorizeTransaction = Commerce::getInstance()->getTransactions()->getTransactionById($transaction->parentId);
+                if(!empty($authorizeTransaction)) {
+                    $authorizeResponse = json_decode($authorizeTransaction->response);
+                    
+                    if(!empty($authorizeResponse->transactionResponse->accountNumber)) {
+                        $cardNumber = str_replace("X", "", $authorizeResponse->transactionResponse->accountNumber);
+                    } 
+                }
+              $transactionReference->card = new \stdClass();
+              $transactionReference->card->number = $cardNumber;
+              
+              // Expiration date isn't needed - let's add a placeholder.
+              $transactionReference->card->expiry = "XXXX";
+              
+              // Roll the data back into the transaction reference.
+              $transaction->reference = json_encode($transactionReference);
+              $card = array("customerProfile" => json_decode($transaction->reference)->cardReference);
+            }
+
+            // End Modifications
+            
+            $itemBag = $this->getItemBagForOrder($order);
+            
+            $request = $this->createPaymentRequest($transaction, $card, $itemBag);
+            $this->populateRequest($request, $form);
+            
         } else {
-            $order = $transaction->getOrder();
 
             $card = null;
             
@@ -458,7 +523,7 @@ class Gateway extends CreditCardGateway
             if ($form && !isset($form->customerProfile)) {
                 $card = $this->createCard($form, $order);
             } elseif (isset($form->customerProfile)) {
-	            $card = array("customerProfile" => $form->customerProfile);
+                $card = array("customerProfile" => $form->customerProfile);
             }
             
             // End Modifications
@@ -468,7 +533,8 @@ class Gateway extends CreditCardGateway
             $request = $this->createPaymentRequest($transaction, $card, $itemBag);
             $this->populateRequest($request, $form);
         }
-
+ 
+        
         return $request;
     }
     
@@ -528,7 +594,7 @@ class Gateway extends CreditCardGateway
         if(!empty($card) && $card instanceof CreditCard) {
             $request['card'] = $card;
         } elseif (isset($card['customerProfile'])) {
-	        $request['cardReference'] = $card['customerProfile'];
+            $request['cardReference'] = $card['customerProfile'];
         }
 
         // End Modifications
@@ -536,7 +602,7 @@ class Gateway extends CreditCardGateway
         if ($itemBag) {
             $request['items'] = $itemBag;
         }
-
+        
         return $request;
     }
     
@@ -553,11 +619,11 @@ class Gateway extends CreditCardGateway
         if (!$this->gateway()->supportsDeleteCard()) {
             return true;
         }
-		
-		// Start Modifications
-		// Decode the Card Details so it can be deleted.
-		// Everything above (and below this statement) comes from the Craft Omnipay Gateway.php file.
-		
+        
+        // Start Modifications
+        // Decode the Card Details so it can be deleted.
+        // Everything above (and below this statement) comes from the Craft Omnipay Gateway.php file.
+        
         $deleteCardRequest = $this->gateway()->deleteCard(json_decode($token, true));
         
         // End Modifications

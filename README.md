@@ -94,7 +94,19 @@ When Accept.js is enabled, Craft Commerce does not process the credit card numbe
 
 ## Subscriptions
 
-This gateway does not currently support subscriptions.
+As of version 1.5, we've added a new subscriptions gateway to this Authorize.net plugin. Because Authorize.net doesn't offer subscription plans, this feature has been implemented using the Authorize.net CIM and Recurring Billing. This implementation does require a separate gateway, but both gateways can run simultaneously in the same Commerce installation. The subscription gateway cannot be used for regular transactions or refunds, it only works within Craft Commerce subscriptions. *You will want to exclude this gateway's saved payment methods from your checkout process.*
+
+With those things in mind, you will setup all of your "plans" in the gateway settings before referencing those plans within the Craft Commerce subscriptions plans settings area. Plans can be set to bill on a daily or monthly basis, with a minimum of 7 days or 1 month between each billing cycle. You can offer trial periods with adjustable (or free) rates, and even offset the first billing date (which will extend a trial).
+
+When specifying the trial length from the front-end, be sure to specify the length in periods (matching your plan settings in the gateway) rather than days. The plugin will convert the months to days automatically, adding the additional days from the extended start date as necessary.
+
+Because Authorize.net CIM requires additional billing fields, there will be some additional required fields depending on your Authorize.net settings. All of these fields are available within the default form, but could be moved to hidden fields if you wished to pull this information from the customer profile.
+
+You will need to setup webhooks in your Authorize.net account in order for Authorize.net to properly calculate the next billing date and cancel a subscription when it's no longer valid. A valid Signature Key is also required in the gateway settings to validate that the calls originate from Authorize.net. You will want to subscribe to all Subscription Events, and all Payment Events except for the fraud (x3) and priorAuthCapture.created events.
+
+*Note: Authorize.net requires a 15-second delay while creating a CIM contact, so you may want to build a waiting indicator into your interface.*
+
+We've enabled the discussions area in the repository for general subscriptions feedback, but if you have questions about the new subscription functionality, or if you find a bug while testing, please let us know by opening an issue or dropping us a note at hello@digitalpros.co.
 
 ## Support
 
