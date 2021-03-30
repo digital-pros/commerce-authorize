@@ -1,8 +1,8 @@
 # Release Notes for Authorize.net for Craft Commerce
 
-## 1.5 - 2021-03-30
+## 1.5.0 - 2021-03-30
 
-> {note} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
 
 ### Added
 - Subscriptions are now available through a new subscriptions gateway.
