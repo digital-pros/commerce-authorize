@@ -471,9 +471,10 @@ class Gateway extends CreditCardGateway
     {
         
         $order = $transaction->getOrder();
+        $transactionReference = json_decode($transaction->reference);
         
         // For authorize and capture we're referring to a transaction that already took place so no card or item shenanigans.
-        if (in_array($transaction->type, [TransactionRecord::TYPE_REFUND, TransactionRecord::TYPE_CAPTURE], false) && isset($form->customerProfile)) {
+        if (in_array($transaction->type, [TransactionRecord::TYPE_REFUND, TransactionRecord::TYPE_CAPTURE], false) && (isset($form->customerProfile) || (isset($transactionReference->card) && $transactionReference->card->number == null))) {
             
             // Start Modifications 
             // Due to Accept.js, there are certain cases where the Card number may not be available in the transactions reference, 
@@ -481,11 +482,9 @@ class Gateway extends CreditCardGateway
             // the transaction before it's sent back for processing.
             
             // Alternatively, we could request this information from Authorize.net, but this appears to be the most efficient
-            // workaround for now.
-            
-            $transactionReference = json_decode($transaction->reference);
+            // workaround for now. 
            
-            if(!empty($transactionReference) && !isset($transactionReference->card)) {
+            if(!empty($transactionReference) && !isset($transactionReference->card) || (isset($transactionReference->card) && $transactionReference->card->number == null)) {
                 $authorizeTransaction = Commerce::getInstance()->getTransactions()->getTransactionById($transaction->parentId);
                 if(!empty($authorizeTransaction)) {
                     $authorizeResponse = json_decode($authorizeTransaction->response);
@@ -502,7 +501,13 @@ class Gateway extends CreditCardGateway
               
               // Roll the data back into the transaction reference.
               $transaction->reference = json_encode($transactionReference);
-              $card = array("customerProfile" => json_decode($transaction->reference)->cardReference);
+              
+              if(isset(json_decode($transaction->reference)->cardReference)) {
+                  $card = array("customerProfile" => json_decode($transaction->reference)->cardReference);
+              } else {
+                  $card = array(json_decode($transaction->reference)->card);
+              }
+              
             }
 
             // End Modifications

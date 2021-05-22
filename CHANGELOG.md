@@ -1,5 +1,10 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 1.5.1 - 2021-05-22
+
+### Fixed
+- Refunding a transaction without a card number could case the refund to fail.
+
 ## 1.5.0 - 2021-03-30
 
 > {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
