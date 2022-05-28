@@ -25,8 +25,8 @@
     "rss": "https://github.com/digitalpros/commerce-authorize/commits/master.atom"
   },
   "require": {
-    "craftcms/cms": "^3.1.5",
-    "craftcms/commerce": "^2.0.0 || ^3.0.0",
+    "craftcms/cms": "^3.0||^4.0",
+    "craftcms/commerce": "^2.0.0 || ^3.0.0 || ^4.0.0",
     "craftcms/commerce-omnipay": "^2.0.0",
     "omnipay/authorizenet": "^3.0.0",
     "authorizenet/authorizenet": "~2.0.1"
