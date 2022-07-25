@@ -194,7 +194,7 @@ class Subscriptions extends BaseGateway
     // Public Methods
     // =========================================================================
     
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -222,7 +222,7 @@ class Subscriptions extends BaseGateway
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): string
     {
         return Craft::$app->getView()->renderTemplate('commerce-authorize/subscriptionSettings', ['gateway' => $this]);
     }
@@ -230,7 +230,7 @@ class Subscriptions extends BaseGateway
     /**
      * @inheritdoc
      */
-    public function getPaymentFormHtml(array $params)
+    public function getPaymentFormHtml(array $params): string
     {
         $defaults = [
             'gateway' => $this,
@@ -695,7 +695,7 @@ class Subscriptions extends BaseGateway
     /**
      * @inheritdoc
      */
-    public function getPlanSettingsHtml(array $params = [])
+    public function getPlanSettingsHtml(array $params = []):string
     {
         return Craft::$app->getView()->renderTemplate('commerce-authorize/planSettings', $params);
     }
