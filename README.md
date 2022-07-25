@@ -5,10 +5,16 @@
 This gateway utilizes the thephpleague/omnipay-authorizenet Authorize.net driver, and will update the Authorize.net AIM gateway from Craft Commerce 1.
 
 #### Requirements
-- Craft 3.1.5 (or later)
-- Craft Commerce 2
+- Craft 4 (or later)
+- Craft Commerce 4
 
-This gateway is a commercial plugin for Craft 3 and can be installed using the Craft plugin store, or by updating the composer.json file to require this gateway.
+> **Warning**
+> Craft Commerce 4 changed the name attribute convention on payment fields to include the payment handle. Sites that use the default form will be updated automatically, but sites that use a custom form will need to be updated.
+
+> **Warning**
+> The required changes for Craft Commerce 4 are significant. Please run test transactions through your gateway after updating to this version.
+
+This gateway is a commercial plugin for Craft 4 and can be installed using the Craft plugin store, or by updating the composer.json file to require this gateway.
 
 ```composer require digital-pros/commerce-authorize ```
 
@@ -26,22 +32,22 @@ When enabled in the Gateway settings, the default payment form will be used. Whe
 ***The examples below have been simplified for illustration purposes.***
 	
 	<label>Card Holder</label>
-	<input name="firstName" placeholder="First Name" required="required" type="text">
-	<input name="lastName" placeholder="Last Name" required="required" type="text">
+	<input name="paymentForm[gatewayHandleGoesHere][firstName]" placeholder="First Name" required="required" type="text">
+	<input name="paymentForm[gatewayHandleGoesHere][lastName]" placeholder="Last Name" required="required" type="text">
 
 	<label>Card Number</label>
-	<input id="number" name="number" placeholder="Card Number" required="required" type="text">
+	<input id="paymentForm-gatewayHandleGoesHere-number" name="paymentForm[gatewayHandleGoesHere][number]" placeholder="Card Number" required="required" type="text">
 
 	<label>Card Expiration Date</label>
-	<select id="month" name="month"><option value="12">12</option>...</select>
-	<select id="year" name="year"><option value="2019">2019</option>...</select>
+	<select id="paymentForm-gatewayHandleGoesHere-month" name="paymentForm[gatewayHandleGoesHere][month]"><option value="12">12</option>...</select>
+	<select id="paymentForm-gatewayHandleGoesHere-year" name="paymentForm[gatewayHandleGoesHere][year]"><option value="2019">2019</option>...</select>
 
 	<label>CVV/CVV2</label>
-	<input id="cvv" name="cvv" placeholder="CVV" required="required" type="text">
+	<input id="paymentForm-gatewayHandleGoesHere-cvv" name="paymentForm[gatewayHandleGoesHere][cvv]" placeholder="CVV" required="required" type="text">
 	
 	{{ cart.gateway.getPaymentFormHtml({})|raw }}
 
-	<button id="submit" name="submit">Pay Now</button>
+	<button id="paymentForm-gatewayHandleGoesHere-submit" name="paymentForm[gatewayHandleGoesHere][submit]">Pay Now</button>
 
 ## Accept.js
 
@@ -54,23 +60,23 @@ When using the custom Accept.js form illustrated below, the payment form must ha
 If `sendPaymentDataToAnet()` contains a `true` parameter, `sendPaymentDataToAnet(true)` the card data will be removed from the credit card fields after the token has been created, but before the form is submitted to the server for processing. For the default form above, this option is specified in the gateway settings.
 
     <label>Card Holder</label>
-	<input name="firstName" placeholder="First Name" required="required" type="text">
-	<input name="lastName" placeholder="Last Name" required="required" type="text">
+	<input name="paymentForm[gatewayHandleGoesHere][firstName]" placeholder="First Name" required="required" type="text">
+	<input name="paymentForm[gatewayHandleGoesHere][lastName]" placeholder="Last Name" required="required" type="text">
 
 	<label>Card Number</label>
-	<input id="number" name="number" placeholder="Card Number" required="required" type="text">
+	<input id="paymentForm-gatewayHandleGoesHere-number" name="paymentForm[gatewayHandleGoesHere][number]" placeholder="Card Number" required="required" type="text">
 
 	<label>Card Expiration Date</label>
-	<select id="month" name="month"><option value="12">12</option>...</select>
-	<select id="year" name="year"><option value="2019">2019</option>...</select>
+	<select id="paymentForm-gatewayHandleGoesHere-month" name="paymentForm[testingGateway][month]"><option value="12">12</option>...</select>
+	<select id="paymentForm-gatewayHandleGoesHere-year" name="paymentForm[gatewayHandleGoesHere][year]"><option value="2019">2019</option>...</select>
 
 	<label>CVV/CVV2</label>
-	<input id="cvv" name="cvv" placeholder="CVV" required="required" type="text">
+	<input id="paymentForm-gatewayHandleGoesHere-cvv" name="paymentForm[gatewayHandleGoesHere][cvv]" placeholder="CVV" required="required" type="text">
 	
 	<!-- Required fields and changes for Authorize.net Accept.js -->
 	
-	<input id="token" name="token" type="hidden">
-	<input id="tokenDescriptor" name="tokenDescriptor" type="hidden"> 
+	<input id="paymentForm-gatewayHandleGoesHere-token" name="paymentForm[gatewayHandleGoesHere][token]" type="hidden">
+	<input id="paymentForm-gatewayHandleGoesHere-tokenDescriptor" name="paymentForm[gatewayHandleGoesHere][tokenDescriptor]" type="hidden"> 
 	
 	{{ cart.gateway.getPaymentFormHtml({})|raw }}
 
