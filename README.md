@@ -15,7 +15,7 @@ This gateway is a commercial plugin for Craft 4 and can be installed using the C
 
 ```composer require digital-pros/commerce-authorize ```
 
-## Using the Beta Version
+## Using the Version 4 Beta Version
 
 You can upgrade to this development version by updating your composer.json file to pull from this branch.
 
