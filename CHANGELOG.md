@@ -1,5 +1,17 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 4.0.1 - 2022-10-31
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+
+### Added
+- Support for CraftCMS 4 and Craft Commerce 4
+
+### Changed
+- Craft Commerce 4 is now required.
+**Note**
+- Craft Commerce 4 changed the name and ID attributes on payment fields to include the payment handle (see the code examples below). Sites that use the default form will be updated automatically, but payment forms that use a custom form will need to be updated. Please run test transactions through each Authorize.net gateway after updating to this version. Run into a problem? Open an issue or drop us a note at hello@digitalpros.co.
+
 ## 1.5.1 - 2021-05-22
 
 ### Fixed
