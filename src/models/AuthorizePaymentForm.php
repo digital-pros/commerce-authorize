@@ -19,7 +19,7 @@ class AuthorizePaymentForm extends CreditCardPaymentForm
     /**
      * @inheritdoc
      */
-    public function setAttributes($values, $safeOnly = true)
+    public function setAttributes($values, $safeOnly = true): void
     {
 	    
         parent::setAttributes($values, $safeOnly);
@@ -45,7 +45,7 @@ class AuthorizePaymentForm extends CreditCardPaymentForm
     /**
      * @inheritdoc
      */
-    public function populateFromPaymentSource(PaymentSource $paymentSource)
+    public function populateFromPaymentSource(PaymentSource $paymentSource): void 
     {
        
         $this->customerProfile = $paymentSource->token;

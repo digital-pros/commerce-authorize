@@ -115,7 +115,7 @@ class Gateway extends CreditCardGateway
     /**
      * @inheritdoc
      */
-    public function getPaymentFormHtml(array $params)
+    public function getPaymentFormHtml(array $params): string
     {
         $defaults = [
             'gateway' => $this,
@@ -163,7 +163,7 @@ class Gateway extends CreditCardGateway
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): string
     {
         return Craft::$app->getView()->renderTemplate('commerce-authorize/gatewaySettings', ['gateway' => $this]);
     }
@@ -171,7 +171,7 @@ class Gateway extends CreditCardGateway
     /**
      * @inheritdoc
      */
-    public function init() 
+    public function init(): void
     {
         
         Event::on(Gateway::class, Gateway::EVENT_BEFORE_GATEWAY_REQUEST_SEND, function(GatewayRequestEvent $e) {
@@ -179,10 +179,14 @@ class Gateway extends CreditCardGateway
               $this->orderId = $e->transaction->orderId;
 
               // Set the tokens in the request so that Credit Card Validation isn't needed.
+              //var_dump($e);
+              if(!empty($_POST["paymentForm"])) {
+                $formData = $_POST["paymentForm"][array_key_first($_POST["paymentForm"])];
+              }
               
-              if($this->acceptJS == 1 && isset($_POST['tokenDescriptor']) && isset($_POST['token'])) {
-                  $e->request->setOpaqueDataDescriptor($_POST['tokenDescriptor']);
-                  $e->request->setOpaqueDataValue($_POST['token']);
+              if($this->acceptJS == 1 && isset($formData['tokenDescriptor']) && isset($formData['token'])) {
+                  $e->request->setOpaqueDataDescriptor($formData['tokenDescriptor']);
+                  $e->request->setOpaqueDataValue($formData['token']);
               }
               
         });
@@ -267,7 +271,7 @@ class Gateway extends CreditCardGateway
     /**
      * @inheritdoc
      */
-    protected function getGatewayClassName()
+    protected function getGatewayClassName(): string
     {
         return '\\'.OmnipayGateway::class;
     }
@@ -404,12 +408,16 @@ class Gateway extends CreditCardGateway
             'currency' => $cart->paymentCurrency
         ];
         
-        if($this->acceptJS == 1 && isset($_POST['tokenDescriptor']) && isset($_POST['token'])) {
-              $request['opaqueDataDescriptor'] = $_POST['tokenDescriptor'];
-              $request['opaqueDataValue'] = $_POST['token'];
-          }
+        if(!empty($_POST["paymentForm"])) {
+            $formData = $_POST["paymentForm"][array_key_first($_POST["paymentForm"])];
+        }
+        
+        if($this->acceptJS == 1 && isset($formData['tokenDescriptor']) && isset($formData['token'])) {
+            $request['opaqueDataDescriptor'] = $formData['tokenDescriptor'];
+            $request['opaqueDataValue'] = $formData['token'];
+        }
           
-          $cardGateway = Omnipay::create('AuthorizeNet_CIM');
+        $cardGateway = Omnipay::create('AuthorizeNet_CIM');
         
         $cardGateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
         $cardGateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
@@ -467,7 +475,7 @@ class Gateway extends CreditCardGateway
      * @return mixed
      * @throws \yii\base\Exception
      */
-    protected function createRequest(Transaction $transaction, BasePaymentForm $form = null)
+    protected function createRequest(Transaction $transaction, BasePaymentForm $form = null): mixed
     {
         
         $order = $transaction->getOrder();

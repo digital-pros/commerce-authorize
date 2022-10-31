@@ -5,12 +5,21 @@
 This gateway utilizes the thephpleague/omnipay-authorizenet Authorize.net driver, and will update the Authorize.net AIM gateway from Craft Commerce 1.
 
 #### Requirements
-- Craft 3.1.5 (or later)
-- Craft Commerce 2
+- Craft 4 (or later)
+- Craft Commerce 4
 
-This gateway is a commercial plugin for Craft 3 and can be installed using the Craft plugin store, or by updating the composer.json file to require this gateway.
+> **Note**
+> Craft Commerce 4 changed the name and ID attributes on payment fields to include the payment handle (see the code examples below). Sites that use the default form will be updated automatically, but payment forms that use a custom form will need to be updated. Please run test transactions through each Authorize.net gateway after updating to this version. Run into a problem? Open an issue or drop us a note at hello@digitalpros.co.
+
+This gateway is a commercial plugin for Craft 4 and can be installed using the Craft plugin store, or by updating the composer.json file to require this gateway.
 
 ```composer require digital-pros/commerce-authorize ```
+
+## Using the Version 4 Beta
+
+Upgrade to this development version by updating your composer.json file to pull from this branch.
+
+``` "digital-pros/commerce-authorize": "dev-develop-v4", ```
 
 ## Using the Gateway
 
@@ -26,22 +35,22 @@ When enabled in the Gateway settings, the default payment form will be used. Whe
 ***The examples below have been simplified for illustration purposes.***
 	
 	<label>Card Holder</label>
-	<input name="firstName" placeholder="First Name" required="required" type="text">
-	<input name="lastName" placeholder="Last Name" required="required" type="text">
+	<input name="paymentForm[gatewayHandleGoesHere][firstName]" placeholder="First Name" required="required" type="text">
+	<input name="paymentForm[gatewayHandleGoesHere][lastName]" placeholder="Last Name" required="required" type="text">
 
 	<label>Card Number</label>
-	<input id="number" name="number" placeholder="Card Number" required="required" type="text">
+	<input id="paymentForm-gatewayHandleGoesHere-number" name="paymentForm[gatewayHandleGoesHere][number]" placeholder="Card Number" required="required" type="text">
 
 	<label>Card Expiration Date</label>
-	<select id="month" name="month"><option value="12">12</option>...</select>
-	<select id="year" name="year"><option value="2019">2019</option>...</select>
+	<select id="paymentForm-gatewayHandleGoesHere-month" name="paymentForm[gatewayHandleGoesHere][month]"><option value="12">12</option>...</select>
+	<select id="paymentForm-gatewayHandleGoesHere-year" name="paymentForm[gatewayHandleGoesHere][year]"><option value="2019">2019</option>...</select>
 
 	<label>CVV/CVV2</label>
-	<input id="cvv" name="cvv" placeholder="CVV" required="required" type="text">
+	<input id="paymentForm-gatewayHandleGoesHere-cvv" name="paymentForm[gatewayHandleGoesHere][cvv]" placeholder="CVV" required="required" type="text">
 	
 	{{ cart.gateway.getPaymentFormHtml({})|raw }}
 
-	<button id="submit" name="submit">Pay Now</button>
+	<button id="paymentForm-gatewayHandleGoesHere-submit" name="paymentForm[gatewayHandleGoesHere][submit]">Pay Now</button>
 
 ## Accept.js
 
@@ -54,23 +63,23 @@ When using the custom Accept.js form illustrated below, the payment form must ha
 If `sendPaymentDataToAnet()` contains a `true` parameter, `sendPaymentDataToAnet(true)` the card data will be removed from the credit card fields after the token has been created, but before the form is submitted to the server for processing. For the default form above, this option is specified in the gateway settings.
 
     <label>Card Holder</label>
-	<input name="firstName" placeholder="First Name" required="required" type="text">
-	<input name="lastName" placeholder="Last Name" required="required" type="text">
+	<input name="paymentForm[gatewayHandleGoesHere][firstName]" placeholder="First Name" required="required" type="text">
+	<input name="paymentForm[gatewayHandleGoesHere][lastName]" placeholder="Last Name" required="required" type="text">
 
 	<label>Card Number</label>
-	<input id="number" name="number" placeholder="Card Number" required="required" type="text">
+	<input id="paymentForm-gatewayHandleGoesHere-number" name="paymentForm[gatewayHandleGoesHere][number]" placeholder="Card Number" required="required" type="text">
 
 	<label>Card Expiration Date</label>
-	<select id="month" name="month"><option value="12">12</option>...</select>
-	<select id="year" name="year"><option value="2019">2019</option>...</select>
+	<select id="paymentForm-gatewayHandleGoesHere-month" name="paymentForm[testingGateway][month]"><option value="12">12</option>...</select>
+	<select id="paymentForm-gatewayHandleGoesHere-year" name="paymentForm[gatewayHandleGoesHere][year]"><option value="2019">2019</option>...</select>
 
 	<label>CVV/CVV2</label>
-	<input id="cvv" name="cvv" placeholder="CVV" required="required" type="text">
+	<input id="paymentForm-gatewayHandleGoesHere-cvv" name="paymentForm[gatewayHandleGoesHere][cvv]" placeholder="CVV" required="required" type="text">
 	
 	<!-- Required fields and changes for Authorize.net Accept.js -->
 	
-	<input id="token" name="token" type="hidden">
-	<input id="tokenDescriptor" name="tokenDescriptor" type="hidden"> 
+	<input id="paymentForm-gatewayHandleGoesHere-token" name="paymentForm[gatewayHandleGoesHere][token]" type="hidden">
+	<input id="paymentForm-gatewayHandleGoesHere-tokenDescriptor" name="paymentForm[gatewayHandleGoesHere][tokenDescriptor]" type="hidden"> 
 	
 	{{ cart.gateway.getPaymentFormHtml({})|raw }}
 
@@ -88,7 +97,7 @@ Credit Cards will be added to/removed from a customer profile inside the Authori
 
 When Accept.js is enabled, Craft Commerce does not process the credit card number as only a token is passed back for processing. This security measure restricts the payment sources from displaying the last four digits of the card number on the payment source. In order to save a payment source with a custom name, a description field can be added to the payment form. This could potentially be a hidden field where ***only*** the last four digits of the card could be entered before the form is submitted.
 
-	<input id="description" name="description" placeholder="Card Name" />
+	<input id="paymentForm-gatewayHandleGoesHere-description" name="paymentForm[gatewayHandleGoesHere][description]" placeholder="Card Name" />
 
 &#9888; **WARNING: If this feature is disabled after payment sources are saved, an error will be thrown if the customer tries to use or modify the payment source.** *You may wish to run a database backup and then manually clear the Payment Sources database table before disabling this feature.*
 
