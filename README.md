@@ -15,12 +15,6 @@ This gateway is a commercial plugin for Craft 4 and can be installed using the C
 
 ```composer require digital-pros/commerce-authorize ```
 
-## Using the Version 4 Beta
-
-Upgrade to this development version by updating your composer.json file to pull from this branch.
-
-``` "digital-pros/commerce-authorize": "dev-develop-v4", ```
-
 ## Using the Gateway
 
 After installing the gateway, the default form fields will submit a transaction to Authorize.net. 
