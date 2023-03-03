@@ -1,5 +1,10 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 4.0.2 - 2023-03-03
+
+### Fixed
+- Corrected an error in commerce subscriptions where a server error could occur. Note that historical transactions under Commerce > Subscriptions will always be shown with a USD currency label due to limitations within the Authorize.net historical transaction records.
+
 ## 4.0.1 - 2022-10-31
 
 > {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
