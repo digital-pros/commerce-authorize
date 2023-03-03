@@ -774,9 +774,13 @@ class Subscriptions extends BaseGateway
       $authorizeHistory = $this->getPaymentHistory($subscriptionData['customerProfileID']);
        
       if(!empty($authorizeHistory)) {
+         echo '<span class="stored-data">Due to limitations in tranasaction records, transactions in this view will always be delimited as USD without currency conversion.</span>';
          $transactionsList = $authorizeHistory;
       } else {
-         echo '<span class="stored-data">No payment history available. The first transaction is processing and transactions may take some time to update.</span>';
+         echo '<span class="stored-data">No payment history available. The first transaction is processing and transactions may take some time to update. Due to limitations in tranasaction records, transactions in this view will always be delimited as USD without currency conversion.</span>';
+         
+         $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso("USD");
+         
           $transactionsList = [];
           foreach ($subscriptionData['transactions'] as $transaction) {
              
@@ -789,6 +793,7 @@ class Subscriptions extends BaseGateway
                   'paymentAmount' => $transaction['paymentAmount'],
                   'paymentDate' => $transaction['paymentDate'],
                   'paymentReference' => $transaction['paymentReference'],
+                  'paymentCurrency' => $currency,
                   'paid' => $transaction['paid'],
                   'response' => Json::encode($transaction['response']),
               ]);
@@ -1081,9 +1086,14 @@ class Subscriptions extends BaseGateway
       $request->setMerchantAuthentication($merchantAuthentication);
       $request->setCustomerProfileId($customerProfileId);
     
-      $controller = new AnetController\GetTransactionListForCustomerController($request);
+      $controller = new AnetController\GetTransactionListController($request);
     
       $response = $controller->executeWithApiResponse($this->environment);
+      
+      // We have to assume that the payment is USD here because the GetTransactionListController return
+      // doesn't allow us to determine the currency of the transaction.
+      
+      $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso("USD");
         
       $transactions = [];
       if (($response != null) && ($response->getMessages()->getResultCode() == "Ok"))
@@ -1093,6 +1103,7 @@ class Subscriptions extends BaseGateway
                   $transactions[] = new SubscriptionPayment([
                        'paymentAmount' => $transaction->getSettleAmount(),
                        'paymentDate' => $transaction->getSubmitTimeUTC(),
+                       'paymentCurrency' => $currency,
                        'paymentReference' => $transaction->getTransId(),
                        'paid' => $this->paidStatus($transaction->getTransactionStatus()),
                        'response' => Json::encode($transaction),
