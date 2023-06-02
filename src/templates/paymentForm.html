@@ -71,18 +71,29 @@
 
     <div class="multitext">
         <div class="multitextrow">
-
-            {{ forms.text({
-                name: 'number',
-                maxlength: 19,
-                placeholder: "Card Number"|t('commerce'),
-                autocomplete: false,
-                id: 'number',
-                class: 'card-number'~(paymentForm.getErrors('number') ? ' error'),
-                value: paymentForm.number,
-                autocomplete: "cc-number"
-            }) }}
-
+            {% if gateway.acceptJS %}
+                {{ forms.text({
+                    name: 'cc-number',
+                    maxlength: 19,
+                    placeholder: "Card Number"|t('commerce'),
+                    autocomplete: false,
+                    id: 'cc-number',
+                    class: 'card-number'~(paymentForm.getErrors('number') ? ' error'),
+                    value: paymentForm.number,
+                    autocomplete: "cc-number"
+                }) }}
+            {% else %}
+                {{ forms.text({
+                    name: 'number',
+                    maxlength: 19,
+                    placeholder: "Card Number"|t('commerce'),
+                    autocomplete: false,
+                    id: 'number',
+                    class: 'card-number'~(paymentForm.getErrors('number') ? ' error'),
+                    value: paymentForm.number,
+                    autocomplete: "cc-number"
+                }) }}
+            {% endif %}
         </div>
 
         <div class="multitextrow">

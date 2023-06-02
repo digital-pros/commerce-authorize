@@ -1,5 +1,13 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 4.0.3 - 2023-06-02
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin, specifically for subscriptions and saved payment methods.
+
+### Fixed
+- When Accept.js is enabled, the default form now adjusts the card number input field name to cc-number so that number can be used to reference the order number. Gateways without Accept.js are still required to use the "number" field since it's a reserved card input. (Thanks, @justinholtweb!)
+- Updated CustomerID in Saved Payment methods due to recent Craft Commerce adjustments. (Thanks, @whoisgina!)
+
 ## 4.0.2 - 2023-03-03
 
 ### Fixed

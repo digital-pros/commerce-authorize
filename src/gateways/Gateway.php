@@ -354,7 +354,7 @@ class Gateway extends CreditCardGateway
     /**
      * @inheritdoc
      */
-    public function createPaymentSource(BasePaymentForm $sourceData, int $userId): PaymentSource
+    public function createPaymentSource(BasePaymentForm $sourceData, int $customerId): PaymentSource
     {
         if (!$this->supportsPaymentSources()) {
             throw new NotSupportedException(Craft::t('commerce', 'Payment sources are not supported by this gateway'));
@@ -363,7 +363,7 @@ class Gateway extends CreditCardGateway
         $cart = Commerce::getInstance()->getCarts()->getCart();
 
         if (!$address = $cart->getBillingAddress()) {
-            $customer = Commerce::getInstance()->getCustomers()->getCustomerByUserId($userId);
+            $customer = Commerce::getInstance()->getCustomers()->getCustomerByCustomerId($customerId);
 
             if (!$customer || !($address = $customer->getPrimaryBillingAddress())) {
                 throw new NotSupportedException(Craft::t('commerce', 'You need a billing address to save a payment source.'));
@@ -392,7 +392,7 @@ class Gateway extends CreditCardGateway
         // is enabled, we'll add a random number to the description so that a new payment profile will be created for each card. */
         
         if($this->acceptJS == 1) { 
-            $description = 'Commerce Customer - ' . $userId . "-" . rand(100000000, 999999999);
+            $description = 'Commerce Customer - ' . $customerId . "-" . rand(100000000, 999999999);
         } else {
             $description = 'Commerce Customer';
         }
@@ -401,7 +401,7 @@ class Gateway extends CreditCardGateway
             'name' => $fullName,
             'email' => $cart->getEmail(), 
             'customerType' => 'individual',
-            'customerId' => $userId,
+            'customerId' => $customerId,
             'description' => $description,
             'forceCardUpdate' => true,
             'card' => $card,
@@ -441,7 +441,7 @@ class Gateway extends CreditCardGateway
         
         // Need to pass ID if it exists, or Craft throws a fit.
         if($this->acceptJS != 1) {
-            $paymentSources = Commerce::getInstance()->getPaymentSources()->getAllPaymentSourcesByUserId($userId); 
+            $paymentSources = Commerce::getInstance()->getPaymentSources()->getAllPaymentSourcesByCustomerId($customerId); 
             
             if(!empty($paymentSources)) {
                 foreach($paymentSources as $source) {
@@ -454,7 +454,7 @@ class Gateway extends CreditCardGateway
         
         $paymentSource = new PaymentSource([
             'id'=> $currentSource,
-            'userId' => $userId,
+            'customerId' => $customerId,
             'gatewayId' => $this->id,
             'token' => $response->getCardReference(),
             'response' => $response->getMessage(),

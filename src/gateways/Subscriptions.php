@@ -303,7 +303,7 @@ class Subscriptions extends BaseGateway
     /**
      * @inheritdoc
      */
-    public function createPaymentSource(BasePaymentForm $sourceData, int $userId): PaymentSource
+    public function createPaymentSource(BasePaymentForm $sourceData, int $customerId): PaymentSource
     {
 
         $merchantAuthentication = $this->gateway;
@@ -349,7 +349,7 @@ class Subscriptions extends BaseGateway
         // Create a new CustomerProfileType and add the payment profile object
         $customerProfile = new AnetAPI\CustomerProfileType();
         $customerProfile->setDescription("Craft Subscription");
-        $customerProfile->setMerchantCustomerId("CS-" . $userId . "-" . time());
+        $customerProfile->setMerchantCustomerId("CS-" . $customerId . "-" . time());
         $customerProfile->setEmail($sourceData->email);
         $customerProfile->setpaymentProfiles($paymentProfiles);
     
@@ -1188,9 +1188,9 @@ class Subscriptions extends BaseGateway
     /**
     * Get all payment sources from Craft 
     **/
-    private function getAllPaymentSources($userId, $authorizeToken = null) 
+    private function getAllPaymentSources($customerId, $authorizeToken = null) 
     {
-        $paymentSources = Commerce::getInstance()->getPaymentSources()->getAllGatewayPaymentSourcesByUserId($this->id, $userId);
+        $paymentSources = Commerce::getInstance()->getPaymentSources()->getAllGatewayPaymentSourcesByCustomerId($this->id, $customerId);
         
         if(empty($paymentSources)) {
             return null;
