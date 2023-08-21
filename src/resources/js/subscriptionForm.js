@@ -12,7 +12,7 @@ function sendPaymentDataToAnet(target, eraseData) {
 	if(eraseData == true) { eraseCardData = true; } 
 
     // Extract the card number, expiration date, and card code.
-    cardData.cardNumber = target.querySelector('input[name$="[number]"]').value;
+    cardData.cardNumber = target.querySelector('input[name$="[cc-number]"]').value;
     cardData.month = target.querySelector('input[name$="[month]"]').value;
     cardData.year = target.querySelector('input[name$="[year]"]').value;
     cardData.cardCode = target.querySelector('input[name$="[cvv]"]').value;
@@ -60,7 +60,7 @@ function paymentFormUpdate(opaqueData) {
     // Remove Card Data so that it's not sent back to the server.
     
     if(eraseCardData == true) {
-	    window.target.querySelector('input[name$="[number]"]').value = '';
+	    window.target.querySelector('input[name$="[cc-number]"]').value = '';
 	    window.target.querySelector('input[name$="[month]"]').value = '';
 	    window.target.querySelector('input[name$="[year]"]').value = '';
 	    window.target.querySelector('input[name$="[cvv]"]').value = '';
