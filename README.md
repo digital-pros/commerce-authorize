@@ -111,6 +111,34 @@ You will need to setup webhooks in your Authorize.net account in order for Autho
 
 We've enabled the discussions area in the repository for general subscriptions feedback, but if you have questions about the new subscription functionality, or if you find a bug while testing, please let us know by opening an issue or dropping us a note at hello@digitalpros.co.
 
+## Sending a Custom Invoice Number and Description (Standard Gateway Only)
+
+If you'd like to send a custom order number and description with your regular payments, you can now use the following custom event in your custom plugin.
+	
+	use digitalpros\commerce\authorize\events\AuthorizePaymentEvent;
+	use digitalpros\commerce\authorize\gateways\Gateway;
+	
+	Event::on(
+		Gateway::class,
+		Gateway::EVENT_BEFORE_AUTHORIZE_PAYMENT,
+		function(AuthorizePaymentEvent $event) {
+			
+			// @model Transaction $transaction
+			$transaction = $event->transaction;
+			// @var string $invoiceNumber
+			$invoiceNumber = $event->invoiceNumber;        
+			// @var string $description
+			$description = $event->description;
+			// @element Order $order
+			$order = $event->transaction->order;
+	
+			// Update the Invoice Number and Description
+			$event->invoiceNumber = $event->transaction->order->shortNumber; // 20 Characters Max
+			$event->description = "Custom Order Description"; // 255 Characters Max
+			
+		}
+	);
+
 ## Support
 
 Questions? Feel free to open an issue, or send us a note at hello@digitalpros.co.

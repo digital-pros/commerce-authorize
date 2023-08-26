@@ -8,6 +8,7 @@ use craft\commerce\models\payments\BasePaymentForm;
 use craft\commerce\omnipay\base\CreditCardGateway;
 use digitalpros\commerce\authorize\models\AuthorizePaymentForm;
 use digitalpros\commerce\authorize\AuthorizePaymentBundle;
+use digitalpros\commerce\authorize\events\AuthorizePaymentEvent as AuthorizePaymentEvent;
 use craft\commerce\omnipay\events\SendPaymentRequestEvent;
 use craft\commerce\omnipay\events\GatewayRequestEvent;
 use craft\commerce\models\Transaction;
@@ -100,6 +101,34 @@ class Gateway extends CreditCardGateway
      * @var string
      */
     public $plans; 
+    
+    // Events
+    // =========================================================================
+    
+    /**
+     * @event AuthorizePaymentEvent - The event that is triggered just before a payment is sent to Authorize.net.
+     *
+     * ```php
+     * use craft\commerce\events\AuthorizePaymentEvent;
+     * use digitalpros\commerce\authorize\gateways\Gateway;
+     * use yii\base\Event;
+     *
+     * Event::on(
+     *     Gateway::class,
+     *     Gateway::EVENT_BEFORE_AUTHORIZE_PAYMENT,
+     *     function(AuthorizePaymentEvent $event) {
+     *         // @var string $transaction
+     *         $transaction = $event->$transaction;        
+     *         // @var string $invoiceNumber
+     *         $invoiceNumber = $event->invoiceNumber;        
+     *         // @var string $description
+     *         $description = $event->description;
+     *     }
+     * );
+     * ```
+     */
+     
+    public const EVENT_BEFORE_AUTHORIZE_PAYMENT = 'beforeAuthorizePayment'; 
 
     // Public Methods
     // =========================================================================
@@ -564,17 +593,43 @@ class Gateway extends CreditCardGateway
     protected function createPaymentRequest(Transaction $transaction, $card = null, $itemBag = null): array
     {
         $params = ['commerceTransactionId' => $transaction->id, 'commerceTransactionHash' => $transaction->hash];
-
+        
+        // Start Modifications 
+        
+        // Fire a 'beforeAuthorizePayment' event
+        if ($this->hasEventHandlers(self::EVENT_BEFORE_AUTHORIZE_PAYMENT)) {
+            
+            // Trigger the event, and set the default values.
+            $this->trigger(self::EVENT_BEFORE_AUTHORIZE_PAYMENT, $purchaseEvent = new AuthorizePaymentEvent([
+                'transaction' => $transaction,
+                'invoiceNumber' => $transaction->order->shortNumber,
+                'description' => Craft::t('commerce', 'Order').' #'.$transaction->orderId,
+            ]));
+            
+            // Set the values from the purchase event
+            $invoiceNumber = $purchaseEvent->invoiceNumber;
+            $description = $purchaseEvent->description;
+            
+        } else {
+            
+            // In case there's no event handlers.
+            $invoiceNumber = $transaction->order->shortNumber;
+            $description = Craft::t('commerce', 'Order').' #'.$transaction->orderId;
+        }
+        
         $request = [
             'amount' => $transaction->paymentAmount,
             'currency' => $transaction->paymentCurrency,
             'transactionId' => $transaction->hash,
-            'description' => Craft::t('commerce', 'Order').' #'.$transaction->orderId,
+            'invoiceNumber' => (!empty($invoiceNumber) ? substr($invoiceNumber, 0, 20) : ''),
+            'description' => (!empty($description) ? substr($description, 0, 255) : ''),
             'clientIp' => Craft::$app->getRequest()->userIP ?? '',
             'transactionReference' => $transaction->hash,
             'returnUrl' => UrlHelper::actionUrl('commerce/payments/complete-payment', $params),
             'cancelUrl' => UrlHelper::siteUrl($transaction->order->cancelUrl),
         ];
+        
+        // End Modifications
 
         // Set the webhook url.
         if ($this->supportsWebhooks()) {

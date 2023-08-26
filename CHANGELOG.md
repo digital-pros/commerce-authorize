@@ -1,5 +1,12 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 4.0.3 - 2023-06-02
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin, specifically for regular, Accept.js, and saved payment methods.
+
+### Added
+- Added a custom event that allows a custom plugin to set the order and invoice number before the payment is sent to Authorize.net.
+
 ## 4.0.4 - 2023-08-21
 
 > {warning} Changes were made to subscriptions to correct missing card form. Please run a test transaction after updating if you're using the subscription version of the plugin.
