@@ -1,6 +1,6 @@
 # Release Notes for Authorize.net for Craft Commerce
 
-## 4.0.3 - 2023-06-02
+## 4.0.5 - 2023-08-26
 
 > {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin, specifically for regular, Accept.js, and saved payment methods.
 
