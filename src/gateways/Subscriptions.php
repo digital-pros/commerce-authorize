@@ -174,6 +174,11 @@ class Subscriptions extends BaseGateway
     public $webhookSignature;
     
     /**
+      * @var string
+      */
+     public $duplicateWindow; 
+    
+    /**
       * @event CancelSubscriptionEvent The event that is triggered after a subscription is canceled
       *
       * Plugins can get notified after a subscription gets canceled.

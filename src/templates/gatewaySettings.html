@@ -34,6 +34,17 @@
     errors: gateway.getErrors('publicKey')
 }) }}
 
+{{ textField({
+    label: 'Duplicate Transaction Window'|t('commerce'),
+    instructions: 'In seconds, specify the amount of time that should pass before a transaction is no longer considered a duplicate transaction. If this field is set to 0, no duplicate transaction window will be enforced. The default value of 120 (two minutes) is recommended for all transactions.',
+    id: 'duplicateWindow',
+    class: 'ltr',
+    name: 'duplicateWindow',
+    suggestEnvVars: true,
+    value: ((gateway.duplicateWindow is defined and gateway.duplicateWindow is not empty) or gateway.duplicateWindow == 0) ? gateway.duplicateWindow : 120,
+    errors: gateway.getErrors('duplicateWindow')
+}) }}
+
 {{ lightswitchField({
     label: 'Developer Mode'|t('commerce'),
     id: 'developerMode',

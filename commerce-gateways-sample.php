@@ -18,6 +18,10 @@
 		
 		'publicKey' => '',
 		
+		// Duplicate Window Timing
+		
+		'duplicateWindow' => '120',
+		
 		// Set this to 'true' when using the Authorize.net Sandbox.
 		
 		'developerMode' => false,

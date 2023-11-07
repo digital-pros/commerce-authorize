@@ -102,6 +102,11 @@ class Gateway extends CreditCardGateway
      */
     public $plans; 
     
+    /**
+     * @var int
+     */
+    public $duplicateWindow; 
+    
     // Events
     // =========================================================================
     
@@ -628,6 +633,11 @@ class Gateway extends CreditCardGateway
             'returnUrl' => UrlHelper::actionUrl('commerce/payments/complete-payment', $params),
             'cancelUrl' => UrlHelper::siteUrl($transaction->order->cancelUrl),
         ];
+        
+                
+        if(isset($this->duplicateWindow) && $this->duplicateWindow != '' && $this->duplicateWindow != null) {
+            $request['duplicateWindow'] = $this->duplicateWindow;
+        }
         
         // End Modifications
 
