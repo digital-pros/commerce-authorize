@@ -944,7 +944,7 @@ class Subscriptions extends BaseGateway
         $subscription->setAmount($planAmount);
         $subscription->setTrialAmount($trialAmount);
         
-        $paymentToken = json_decode(str_replace('.',',',$paymentSource->token));
+        $paymentToken = json_decode($paymentSource->token);
         
         $customerProfileId = (isset($paymentToken->customerProfileId) ? $paymentToken->customerProfileId : null);
         $customerPaymentProfileId = (isset($paymentToken->customerPaymentProfileId) ? $paymentToken->customerPaymentProfileId : null); 
