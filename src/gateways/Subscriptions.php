@@ -833,23 +833,23 @@ class Subscriptions extends BaseGateway
         // We have to wait for Authorize.net to finalize the payment method.
         // We've run a boatload of tests, and it never completes in under 10 seconds.
         sleep(15);
-        
+
         $craftSubscription = new AuthorizeSubscriptionResponse();
-        
+
         $paymentSource = $this->getAllPaymentSources($user->id, $this->paymentSource);
-        
+
         // Grab the latest information from the gateway. Information stored in PlanData is saved when the plan is created.
         // So we'll use this instead to pull the latest information from the Gateway so the plan doesn't have to be re-created.
-        
+
         if(isset($this->plans[$plan->reference])) {
             $planData = $this->plans[$plan->reference];
         } else {
             throw new Exception(Craft::t('commerce', "Plans don't match options in the Gateway settings."));
         }
-        
+
         $startDate = new \DateTime();
         $nextBillingDate = new \DateTime();
-        
+
         $planName = (!empty($planData[0]) ? $planData[0] : "Craft Subscription");
         $planLength = (!empty($planData[1]) ? (string)$planData[1] : 1);
         $planUnit = (!empty($planData[2]) ? $planData[2] : "months");
@@ -862,31 +862,31 @@ class Subscriptions extends BaseGateway
         $trialDays = (!empty($parameters->trialDays) ? (int)$parameters->trialDays : 0);
 
         $this->amount = $planAmount;
-        
+
         $trialConfirmedLength = 0;
-        
+
          if($trialDays > 0) {
-           // Safety check to make sure we can't add more days to the trial than allowed.     
+           // Safety check to make sure we can't add more days to the trial than allowed.
            if($trialDays >= $trialLength) {
               $trialConfirmedLength = $trialLength;
            } else {
               $trialConfirmedLength = $trialDays;
            }
-           
+
            // Now we'll calculate the total number of days needed for the trial.
            $trialDays = $trialConfirmedLength * $planLength;
            $now = new \DateTime();
            $trialEnd = new \DateTime();
-           
+
            if($planUnit == "months") {
               $trialEnd = $this->sameDateNextMonth($now, $trialDays);
            } else {
               $trialEnd->modify("+" . $trialDays . " " . $planUnit);
            }
-           
+
            $totalTrialDays = $this->dateDifference($now, $trialEnd, $differenceFormat = '%a');
            $totalTrialDays = $totalTrialDays + $startDateDays;
-           
+
            // Set total number of trial days.
            $craftSubscription->setTrialDays($totalTrialDays);
          } else {
@@ -896,22 +896,22 @@ class Subscriptions extends BaseGateway
         if($trialAmount == "" || $trialAmount == 0) {
 
             $nextBillingDate = $nextBillingDate->modify("+" . $startDateDays . " days");
-            
+
             if($planUnit == "months") {
                $nextBillingDate = $this->sameDateNextMonth($nextBillingDate, $trialDays);
             } else {
                $nextBillingDate = $nextBillingDate->modify("+" . $trialDays . " " . $planUnit);
             }
-           
+
         } else {
 
-            // Regular billing or when trial is greater than $0. 
+            // Regular billing or when trial is greater than $0.
             // We'll show a next payment date of when the subscription starts or on the next renewal.
-            
+
             $nextBillingDate = $nextBillingDate->modify("+" . $startDateDays . " days");
-            
+
             // Only increase the plan if there isn't a first-time charge.
-            
+
             if(empty($planData[8])) {
                if($planUnit == "months") {
                    $nextBillingDate = $this->sameDateNextMonth($nextBillingDate, $planLength);
@@ -920,16 +920,16 @@ class Subscriptions extends BaseGateway
                }
             }
         }
-        
+
         $merchantAuthentication = $this->gateway;
-        
+
         // Set the transaction's refId
         $refId = 'ref' . time();
-    
+
         // Subscription Type Info
         $subscription = new AnetAPI\ARBSubscriptionType();
         $subscription->setName($planName);
-    
+
         $interval = new AnetAPI\PaymentScheduleType\IntervalAType();
         $interval->setLength($planLength);
         $interval->setUnit($planUnit);
@@ -939,34 +939,35 @@ class Subscriptions extends BaseGateway
         $paymentSchedule->setStartDate($startDate);
         $paymentSchedule->setTotalOccurrences($planTotal);
         $paymentSchedule->setTrialOccurrences($trialConfirmedLength);
-    
+
         $subscription->setPaymentSchedule($paymentSchedule);
         $subscription->setAmount($planAmount);
         $subscription->setTrialAmount($trialAmount);
-        
-        $paymentToken = json_decode($this->paymentSource);
-        
+
+
+        $paymentToken = json_decode(str_replace('.',',',$paymentSource->token));
+
         $customerProfileId = (isset($paymentToken->customerProfileId) ? $paymentToken->customerProfileId : null);
-        $customerPaymentProfileId = (isset($paymentToken->customerPaymentProfileId) ? $paymentToken->customerPaymentProfileId : null); 
-        
+        $customerPaymentProfileId = (isset($paymentToken->customerPaymentProfileId) ? $paymentToken->customerPaymentProfileId : null);
+
         $profile = new AnetAPI\CustomerProfileIdType();
         $profile->setCustomerProfileId($customerProfileId);
         $profile->setCustomerPaymentProfileId($customerPaymentProfileId);
-        
+
         $subscription->setProfile($profile);
-    
+
         $order = new AnetAPI\OrderType();
         $order->setInvoiceNumber("CS-" . $plan->id . "-" . time());
         $subscription->setOrder($order);
-    
+
         $request = new AnetAPI\ARBCreateSubscriptionRequest();
         $request->setmerchantAuthentication($merchantAuthentication);
         $request->setRefId($refId);
         $request->setSubscription($subscription);
         $controller = new AnetController\ARBCreateSubscriptionController($request);
-    
+
         $response = $controller->executeWithApiResponse($this->environment);
-        
+
         if (($response != null) && ($response->getMessages()->getResultCode() == "Ok") ) {
             $craftSubscription->setReference($response->getSubscriptionId());
             $craftSubscription->setNextPaymentDate($nextBillingDate);
@@ -983,7 +984,7 @@ class Subscriptions extends BaseGateway
             $errorMessages = $response->getMessages()->getMessage();
             throw new Exception(Craft::t('commerce', 'Something went wrong while scheduling the recurring payment in Authorize.net (' . $errorMessages[0]->getText() . ') Please try again.'));
         }
-        
+
         if(!empty($planData[8])) {
             $this->chargeProfile($this->paymentSource, $planData[8], $response->getSubscriptionId());
         }
