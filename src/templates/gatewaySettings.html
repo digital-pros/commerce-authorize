@@ -1,4 +1,4 @@
-{% from "_includes/forms" import autosuggestField, textField, passwordField, lightswitchField, editableTableField %}
+{% from "_includes/forms" import autosuggestField, textField, passwordField, lightswitchField, editableTableField, booleanMenuField %}
 
 <hr />
 
@@ -34,6 +34,19 @@
     errors: gateway.getErrors('publicKey')
 }) }}
 
+{{ booleanMenuField({
+    label: 'Developer Mode'|t('commerce'),
+    id: 'developerMode',
+    name: 'developerMode',
+    yesLabel: 'Yes'|t('commerce'),
+    noLabel: 'No'|t('commerce'),
+    includeEnvVars: true,
+    errors: gateway.getErrors('developerMode'),
+    value: (gateway.developerMode is defined) ? gateway.developerMode : ""
+}) }}
+
+<hr />
+
 {{ textField({
     label: 'Duplicate Transaction Window'|t('commerce'),
     instructions: 'In seconds, specify the amount of time that should pass before a transaction is no longer considered a duplicate transaction. If this field is set to 0, no duplicate transaction window will be enforced. The default value of 120 (two minutes) is recommended for all transactions.',
@@ -45,16 +58,7 @@
     errors: gateway.getErrors('duplicateWindow')
 }) }}
 
-{{ lightswitchField({
-    label: 'Developer Mode'|t('commerce'),
-    id: 'developerMode',
-    instructions: 'Enable this toggle when using the Authorize.net Sandbox.',
-    class: 'ltr',
-    name: 'developerMode',
-    suggestEnvVars: true,
-    errors: gateway.getErrors('developerMode'),
-    on: (gateway.developerMode is defined) ? gateway.developerMode : ""
-}) }}
+<hr />
 
 {{ lightswitchField({
     label: 'Accept.js'|t('commerce'),
@@ -148,4 +152,3 @@
 Questions or Suggestions?</h2>
 
 <p><em>Create a ticket in <a href="https://github.com/digital-pros/commerce-authorize" target="_blank">Github</a>, or email our support team at <a href="mailto:hello@digitalpros.co">hello@digitalpros.co</a>.</em></p>
-
