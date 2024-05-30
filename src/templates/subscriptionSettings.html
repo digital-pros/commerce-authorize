@@ -1,4 +1,4 @@
-{% from "_includes/forms" import autosuggestField, textField, passwordField, lightswitchField, editableTableField %}
+{% from "_includes/forms" import autosuggestField, textField, passwordField, lightswitchField, editableTableField, booleanMenuField %}
 
 <hr />
 
@@ -50,15 +50,15 @@
     errors: gateway.getErrors('webhookSignature')
 }) }}
 
-{{ lightswitchField({
+{{ booleanMenuField({
     label: 'Developer Mode'|t('commerce'),
     id: 'developerMode',
-    instructions: 'Enable this toggle when using the Authorize.net Sandbox.',
-    class: 'ltr',
     name: 'developerMode',
-    suggestEnvVars: true,
+    yesLabel: 'Yes'|t('commerce'),
+    noLabel: 'No'|t('commerce'),
+    includeEnvVars: true,
     errors: gateway.getErrors('developerMode'),
-    on: (gateway.developerMode is defined) ? gateway.developerMode : ""
+    value: (gateway.developerMode is defined) ? gateway.developerMode : ""
 }) }}
 
 <hr />
@@ -132,4 +132,3 @@
 Questions or Suggestions?</h2>
 
 <p><em>Create a ticket in <a href="https://github.com/digital-pros/commerce-authorize" target="_blank">Github</a>, or email our support team at <a href="mailto:hello@digitalpros.co">hello@digitalpros.co</a>.</em></p>
-
