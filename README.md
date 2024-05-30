@@ -109,6 +109,14 @@ You will need to setup webhooks in your Authorize.net account in order for Autho
 
 *Note: Authorize.net requires a 15-second delay while creating a CIM contact, so you may want to build a waiting indicator into your interface.*
 
+CraftCMS default store templates in the Craft Commerce repository do not include a payment form with subscriptions because Stripe only supports one payment method (a primary payment method per customer), but you will need to add a payment form to your subscriptions (Craft Commerce 4.6.2 or later) using the following template code:
+
+```
+{% namespace plan.getGateway().handle|commercePaymentFormNamespace %}
+  {{ plan.getGateway().getPaymentFormHtml({})|raw }}
+{% endnamespace %}
+```
+
 We've enabled the discussions area in the repository for general subscriptions feedback, but if you have questions about the new subscription functionality, or if you find a bug while testing, please let us know by opening an issue or dropping us a note at hello@digitalpros.co.
 
 ## Sending a Custom Invoice Number and Description (Standard Gateway Only)
