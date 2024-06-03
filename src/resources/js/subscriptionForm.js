@@ -12,10 +12,10 @@ function sendPaymentDataToAnet(target, eraseData) {
 	if(eraseData == true) { eraseCardData = true; } 
 
     // Extract the card number, expiration date, and card code.
-    cardData.cardNumber = target.querySelector('input[name$="[cc-number]"]').value;
+    cardData.cardNumber = target.querySelector('input[name$="[cc-number]"]').value.replace(/\s+/g, '');
     cardData.month = target.querySelector('input[name$="[month]"]').value;
     cardData.year = target.querySelector('input[name$="[year]"]').value;
-    cardData.cardCode = target.querySelector('input[name$="[cvv]"]').value;
+    cardData.cardCode = target.querySelector('input[name$="[cvv]"]').value.replace(/\s+/g, '');
     secureData.cardData = cardData;
 
     // The Authorize.Net Client Key is used in place of the traditional Transaction Key. The Transaction Key
