@@ -5,13 +5,13 @@
 This gateway utilizes the thephpleague/omnipay-authorizenet Authorize.net driver, and will update the Authorize.net AIM gateway from Craft Commerce 1.
 
 #### Requirements
-- Craft 4 (or later)
-- Craft Commerce 4
+- Craft 5 (or later)
+- Craft Commerce 5
 
 > **Note**
 > Craft Commerce 4 changed the name and ID attributes on payment fields to include the payment handle (see the code examples below). Sites that use the default form will be updated automatically, but payment forms that use a custom form will need to be updated. Please run test transactions through each Authorize.net gateway after updating to this version. Run into a problem? Open an issue or drop us a note at hello@digitalpros.co.
 
-This gateway is a commercial plugin for Craft 4 and can be installed using the Craft plugin store, or by updating the composer.json file to require this gateway.
+This gateway is a commercial plugin for Craft 5 and can be installed using the Craft plugin store, or by updating the composer.json file to require this gateway.
 
 ```composer require digital-pros/commerce-authorize ```
 
