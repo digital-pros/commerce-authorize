@@ -478,12 +478,19 @@ class Subscriptions extends BaseGateway
                 
                $subscription = Subscription::find()->reference(str_replace("CS-", "", $payload['payload']['merchantReferenceId']))->one();
 
+               if($subscription->getOrder() !== null && !empty($subscription->getOrder()->currency)) {
+                  $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($subscription->getOrder()->currency);
+               } else {
+                  $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso("USD");
+               }
+
                $payment = new SubscriptionPayment([
                    'paymentAmount' => $payload['payload']['authAmount'],
                    'paymentDate' => strtotime($payload['eventDate']),
                    'paymentReference' => $payload['payload']['id'],
+                   'paymentCurrency' => $currency,
                    'paid' => true,
-                   'response' => $payload['payload'],
+                   'response' => Json::encode($payload['payload']),
                ]);
                
                // We're after the initial start date, so we'll adjust the plan by what we know from the stored plan details.
@@ -517,13 +524,20 @@ class Subscriptions extends BaseGateway
                      if($response->getTransaction()->getSubscription() !== null) {
                        
                         $subscription = Subscription::find()->reference($response->getTransaction()->getSubscription()->getId())->one();
+
+                        if($subscription->getOrder() !== null && !empty($subscription->getOrder()->currency)) {
+                           $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($subscription->getOrder()->currency);
+                        } else {
+                           $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso("USD");
+                        }
         
                         $payment = new SubscriptionPayment([
                            'paymentAmount' => $payload['payload']['authAmount'],
                            'paymentDate' => strtotime($payload['eventDate']),
                            'paymentReference' => $payload['payload']['id'],
+                           'paymentCurrency' => $currency,
                            'paid' => true,
-                           'response' => $payload['payload'],
+                           'response' => Json::encode($payload['payload']),
                         ]);
                        
                         $dateAdjust = $subscription->getSubscriptionData()['planData'][1] . $subscription->getSubscriptionData()['planData'][2];
@@ -789,19 +803,25 @@ class Subscriptions extends BaseGateway
           $transactionsList = [];
           foreach ($subscriptionData['transactions'] as $transaction) {
              
-             // Check to see if transaction already exists.
-              foreach ($transactionsList as $existingTransaction) {
-                if(json_decode($existingTransaction['response'])->id == $transaction['response']['id']) { continue 2; }
-              }
+              // Check to see if transaction already exists.
+               foreach ($transactionsList as $existingTransaction) {
+                 if(json_decode($existingTransaction['response'])->id == $transaction['response']['id']) { continue 2; }
+               }
               
-              $transactionsList[] = new SubscriptionPayment([
+               if(!empty($subscriptionData['currencyCode'])) {
+                  $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso($subscriptionData['currencyCode']);
+               } else {
+                  $currency = Commerce::getInstance()->getCurrencies()->getCurrencyByIso("USD");
+               }
+              
+               $transactionsList[] = new SubscriptionPayment([
                   'paymentAmount' => $transaction['paymentAmount'],
                   'paymentDate' => $transaction['paymentDate'],
                   'paymentReference' => $transaction['paymentReference'],
                   'paymentCurrency' => $currency,
                   'paid' => $transaction['paid'],
                   'response' => Json::encode($transaction['response']),
-              ]);
+               ]);
           }
       }
 
