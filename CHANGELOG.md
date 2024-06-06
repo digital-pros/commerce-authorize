@@ -1,5 +1,14 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 4.0.7 - 2024-06-06
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+
+### Fixed
+- Developer Mode can now be set with an environment variable (thanks, @elivz!)
+- Subscriptions have some parsing updates, and support currency. (thanks, Brent!)
+- Validation within Accept.js script now allows for spaces between numbers in the default form. (thanks, Ben!)
+
 ## 4.0.6 - 2023-11-07
 
 > {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
