@@ -1,5 +1,13 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 5.0.0 - 2024-06-06
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+
+### Added
+- Support for Craft Commerce 5.
+
+
 ## 4.0.7 - 2024-06-06
 
 > {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
