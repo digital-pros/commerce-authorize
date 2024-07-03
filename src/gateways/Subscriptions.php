@@ -212,7 +212,7 @@ class Subscriptions extends BaseGateway
         $this->gateway->setName(Craft::parseEnv($this->apiLoginId));
         $this->gateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
 
-        $this->environment = ($this->developerMode == 1 ? \net\authorize\api\constants\ANetEnvironment::SANDBOX : \net\authorize\api\constants\ANetEnvironment::PRODUCTION);
+        $this->environment = ($this->isDeveloperMode() ? \net\authorize\api\constants\ANetEnvironment::SANDBOX : \net\authorize\api\constants\ANetEnvironment::PRODUCTION);
 
     }
     
@@ -251,7 +251,7 @@ class Subscriptions extends BaseGateway
         
         // Check to see if developer mode is enabled.
         
-        if($this->developerMode == 1) { 
+        if($this->isDeveloperMode()) { 
             $view->registerJsFile('https://jstest.authorize.net/v1/Accept.js');
         } else {
             $view->registerJsFile('https://js.authorize.net/v1/Accept.js');
@@ -1231,5 +1231,13 @@ class Subscriptions extends BaseGateway
         
         return $paymentSources[0];
     }
+    
+   /**
+      * Whether developer mode is enabled
+      */
+   public function isDeveloperMode(): bool
+   {
+      return filter_var(\craft\helpers\App::parseEnv($this->developerMode), FILTER_VALIDATE_BOOLEAN);
+   }
    
 }

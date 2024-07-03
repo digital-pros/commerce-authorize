@@ -1,5 +1,12 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 5.0.1 - 2024-07-03
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+
+### Fixed
+- The new Developer mode environment variable has some additional parsing added (thanks, @johnnynotsolucky!)
+
 ## 5.0.0 - 2024-06-06
 
 > {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
@@ -7,6 +14,12 @@
 ### Added
 - Support for Craft Commerce 5.
 
+## 4.0.8 - 2024-07-03
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+
+### Fixed
+- The new Developer mode environment variable has some additional parsing added (thanks, @johnnynotsolucky!)
 
 ## 4.0.7 - 2024-06-06
 
