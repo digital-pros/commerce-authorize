@@ -169,7 +169,7 @@ class Gateway extends CreditCardGateway
             
             // Check to see if developer mode is enabled.
             
-                if($this->developerMode == 1) { 
+                if($this->isDeveloperMode()) {
                     $view->registerJsFile('https://jstest.authorize.net/v1/Accept.js');
                 } else {
                     $view->registerJsFile('https://js.authorize.net/v1/Accept.js');
@@ -282,7 +282,7 @@ class Gateway extends CreditCardGateway
 
             $gateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
             $gateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
-            $gateway->setDeveloperMode($this->developerMode);
+            $gateway->setDeveloperMode($this->isDeveloperMode());
             
             $gateway->setParameter('invoiceNumber', substr($cart->number, 0, 7));
             
@@ -293,7 +293,7 @@ class Gateway extends CreditCardGateway
     
             $gateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
             $gateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
-            $gateway->setDeveloperMode($this->developerMode);
+            $gateway->setDeveloperMode($this->isDeveloperMode());
 
             $gateway->setParameter('invoiceNumber', substr($cart->number, 0, 7));
             
@@ -455,7 +455,7 @@ class Gateway extends CreditCardGateway
         
         $cardGateway->setApiLoginId(Craft::parseEnv($this->apiLoginId));
         $cardGateway->setTransactionKey(Craft::parseEnv($this->transactionKey));
-        $cardGateway->setDeveloperMode($this->developerMode);
+        $cardGateway->setDeveloperMode($this->isDeveloperMode());
 
         $this->populateRequest($request, $sourceData);
         $createCardRequest = $cardGateway->createCard($request);
@@ -710,6 +710,13 @@ class Gateway extends CreditCardGateway
 
         return $response->isSuccessful();
     }
-   
-        
+
+
+    /**
+     * Whether developer mode is enabled
+     */
+    public function isDeveloperMode(): bool
+    {
+        return filter_var(\craft\helpers\App::parseEnv($this->developerMode), FILTER_VALIDATE_BOOLEAN);
+    }
 }
