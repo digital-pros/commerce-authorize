@@ -1,5 +1,12 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 4.0.9 - 2024-11-13
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+
+### Fixed
+- Transactions that were captured first can now be refunded in the control panel. (thanks, @elivz!)
+
 ## 4.0.8 - 2024-06-06
 
 > {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
