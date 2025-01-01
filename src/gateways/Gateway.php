@@ -516,7 +516,7 @@ class Gateway extends CreditCardGateway
         $transactionReference = json_decode($transaction->reference);
         
         // For authorize and capture we're referring to a transaction that already took place so no card or item shenanigans.
-        if (in_array($transaction->type, [TransactionRecord::TYPE_REFUND, TransactionRecord::TYPE_AUTHORIZE, TransactionRecord::TYPE_CAPTURE], false) && (isset($form->customerProfile) || (isset($transactionReference->card) && $transactionReference->card->number == null))) {
+        if (in_array($transaction->type, [TransactionRecord::TYPE_REFUND, TransactionRecord::TYPE_AUTHORIZE, TransactionRecord::TYPE_CAPTURE], false) && (isset($form->customerProfile) || (isset($transactionReference->card) && $transactionReference->card->number == null)) && !empty($transactionReference)) {
             
             // Start Modifications 
             // Due to Accept.js, there are certain cases where the Card number may not be available in the transactions reference, 
