@@ -1,7 +1,7 @@
 {
   "name": "digital-pros/commerce-authorize",
   "description": "Authorize.net payment gateway plugin for Craft Commerce 4",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "type": "craft-plugin",
   "keywords": [
     "authorize",
