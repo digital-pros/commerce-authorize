@@ -1,5 +1,12 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 5.0.3 - 2024-12-29
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+
+### Fixed
+- Manual capture no longer throws an error when the save card option is selected. (thanks, @shennyg!)
+
 ## 5.0.2 - 2024-11-13
 
 > {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
