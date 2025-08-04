@@ -146,15 +146,16 @@
 
     {% if craft.app.request.isCpRequest == true %}
         <script>
-            if(document.querySelector("#paymentmodal #form-gateway-{{gateway.id}}") != undefined) {
-                document.querySelector("#paymentmodal  #form-gateway-{{gateway.id}}").addEventListener("submit", function(e){
-                    e.preventDefault();    //stop form from submitting
-                    document.querySelector("#paymentmodal  #form-gateway-{{gateway.id}} input[type=submit]").setAttribute("id", "authorizeSubmit");
+            if (document.querySelector("#paymentmodal #gateway-{{gateway.id}}-form") != undefined) {
+                var formEl = document.querySelector("#paymentmodal #gateway-{{gateway.id}}-form form");
+                formEl.addEventListener("submit", function(e) {
+                    e.preventDefault();
+                    document.querySelector("#paymentmodal #gateway-{{gateway.id}}-form input[type=submit]").setAttribute("id", "authorizeSubmit");
                     this.setAttribute("id", "paymentForm");
                     {% if gateway.disableAcceptData %}
-                       sendPaymentDataToAnet(true);
+                        sendPaymentDataToAnet(this, true);
                     {% else %}
-                        sendPaymentDataToAnet();
+                        sendPaymentDataToAnet(this, false);
                     {% endif %}
                 });
             }

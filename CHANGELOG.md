@@ -1,5 +1,12 @@
 # Release Notes for Authorize.net for Craft Commerce
 
+## 5.0.4 - 2025-08-04
+
+> {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
+
+### Fixed
+- Capturing payments in the control panel was throwing an error due to changes within Craft Commerce. (thanks, @mgambella!)
+
 ## 5.0.3 - 2024-12-29
 
 > {warning} Significant changes have been made in this update, a test transaction should be processed after upgrading this plugin.
