@@ -29,16 +29,20 @@ function sendPaymentDataToAnet(eraseData) {
 }
 
 function responseHandler(response) {
-    if (response.messages.resultCode === "Error") {
-        for (var i = 0; i < response.messages.message.length; i++) {
-            console.log(response.messages.message[i].code + ": " + response.messages.message[i].text);
-        }
-        alert("Please check your credit card and try again.");
+	try {
+    	if (response.messages.resultCode === "Error") {
+        	for (var i = 0; i < response.messages.message.length; i++) {
+          	  console.log(response.messages.message[i].code + ": " + response.messages.message[i].text);
+        	}
+       		alert("Please check your credit card and try again.");
         
-        document.querySelector('[id$="authorizeSubmit"]').disabled = false;
+        	document.querySelector('[id$="authorizeSubmit"]').disabled = false;
         
-    } else {
-        paymentFormUpdate(response.opaqueData);
+    	} else {
+        	paymentFormUpdate(response.opaqueData);
+		}
+	} catch(error) {
+		console.log(error);
 	}
 }
 
